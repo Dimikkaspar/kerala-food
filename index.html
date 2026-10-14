@@ -2,227 +2,149 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>KERALA MACRO ENGINE // ТРЕКЕР РАЦИОНА</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>KERALA MACRO // MINI APP</title>
+    <!-- Telegram Mini App SDK -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600;700&family=Rubik+Mono+One&display=swap" rel="stylesheet">
     <style>
         :root {
             --bg-main: #0c0e12;
-            --bg-card: #14171f;
-            --bg-input: #1d212b;
+            --bg-card: #151821;
+            --bg-input: #1e2330;
             --gold: #D4AF37;
-            --gold-dim: rgba(212, 175, 55, 0.15);
+            --gold-dim: rgba(212, 175, 55, 0.14);
             --sand: #c2b280;
             --cyan: #00f0ff;
-            --cyan-dim: rgba(0, 240, 255, 0.12);
             --magenta: #ff2a6d;
-            --magenta-dim: rgba(255, 42, 109, 0.15);
-            --text-main: #eef0f4;
+            --text-main: #f0f2f5;
             --text-muted: #8a93a6;
-            --border: #262b38;
+            --border: #282e3d;
+            --safe-bottom: env(safe-area-inset-bottom, 16px);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            -webkit-tap-highlight-color: transparent;
         }
 
-        body {
+        html, body {
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
             background-color: var(--bg-main);
             color: var(--text-main);
-            font-family: 'Inter', sans-serif;
-            line-height: 1.5;
-            padding: 20px;
-            max-width: 1280px;
+            font-family: 'Inter', -apple-system, sans-serif;
+            line-height: 1.4;
+            padding-bottom: calc(74px + var(--safe-bottom));
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 520px;
             margin: 0 auto;
+            padding: 12px;
         }
 
-        header {
-            border-bottom: 1px solid var(--border);
-            padding-bottom: 16px;
-            margin-bottom: 24px;
-            display: flex;
-            justify-content: space-between;
-            align-items: flex-end;
-            flex-wrap: wrap;
-            gap: 12px;
-        }
-
-        h1 {
-            font-family: 'Rubik Mono One', sans-serif;
-            font-size: 1.35rem;
-            color: var(--gold);
-            letter-spacing: 0.5px;
-            font-weight: 400;
-        }
-
-        .subtitle {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            color: var(--sand);
-            text-transform: uppercase;
-        }
-
-        .grid-layout {
-            display: grid;
-            grid-template-columns: 360px 1fr;
-            gap: 24px;
-        }
-
-        @media (max-width: 960px) {
-            .grid-layout {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .card-title {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--gold);
-            margin-bottom: 16px;
+        /* Шапка */
+        .app-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            padding-bottom: 10px;
+            margin-bottom: 12px;
             border-bottom: 1px solid var(--border);
-            padding-bottom: 8px;
         }
 
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-            margin-bottom: 12px;
-        }
-
-        .form-group {
-            display: flex;
-            flex-direction: column;
-            gap: 4px;
-            margin-bottom: 12px;
-        }
-
-        label {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-family: 'JetBrains Mono', monospace;
-        }
-
-        input, select {
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            color: var(--text-main);
-            padding: 10px 12px;
-            border-radius: 4px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.9rem;
-            outline: none;
-            transition: border-color 0.2s;
-        }
-
-        input:focus, select:focus {
-            border-color: var(--gold);
-        }
-
-        button {
-            background: var(--bg-input);
-            color: var(--text-main);
-            border: 1px solid var(--border);
-            padding: 10px 14px;
-            border-radius: 4px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
-            cursor: pointer;
-            transition: all 0.15s ease;
-            text-transform: uppercase;
-        }
-
-        button:hover {
-            border-color: var(--gold);
+        .app-title {
+            font-family: 'Rubik Mono One', sans-serif;
+            font-size: 0.95rem;
             color: var(--gold);
+            letter-spacing: 0.3px;
         }
 
-        .btn-primary {
-            background: var(--gold);
-            color: #000;
-            border-color: var(--gold);
-            font-weight: 700;
+        .app-sub {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
+            color: var(--text-muted);
+        }
+
+        /* Вкладки (Страницы) */
+        .tab-view {
+            display: none;
+        }
+
+        .tab-view.active {
+            display: block;
+        }
+
+        /* Карточки */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 14px;
+            margin-bottom: 12px;
             width: 100%;
+            overflow: hidden;
         }
 
-        .btn-primary:hover {
-            background: #e5c349;
-            color: #000;
+        .card-header {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            color: var(--gold);
+            margin-bottom: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
-        .btn-danger {
-            border-color: rgba(255, 42, 109, 0.4);
-            color: var(--magenta);
-        }
-
-        .btn-danger:hover {
-            background: var(--magenta);
-            color: #fff;
-            border-color: var(--magenta);
-        }
-
-        /* Дашборд прогресс-баров */
+        /* 2x2 Сетка КБЖУ */
         .macro-grid {
             display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 12px;
-            margin-bottom: 16px;
-        }
-
-        @media (max-width: 640px) {
-            .macro-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 8px;
+            margin-bottom: 10px;
         }
 
         .macro-box {
             background: var(--bg-input);
             border: 1px solid var(--border);
-            padding: 14px;
-            border-radius: 6px;
-            position: relative;
-            overflow: hidden;
+            padding: 10px 12px;
+            border-radius: 8px;
+            min-width: 0;
         }
 
         .macro-label {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.7rem;
+            font-size: 0.65rem;
             color: var(--text-muted);
             text-transform: uppercase;
         }
 
         .macro-val {
             font-family: 'JetBrains Mono', monospace;
-            font-size: 1.25rem;
+            font-size: 1.05rem;
             font-weight: 700;
-            margin: 6px 0 8px 0;
+            margin: 4px 0 6px 0;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         .macro-target {
-            font-size: 0.8rem;
+            font-size: 0.75rem;
             color: var(--text-muted);
             font-weight: 400;
         }
 
         .progress-track {
-            height: 6px;
+            height: 5px;
             background: #0c0e12;
             border-radius: 3px;
             overflow: hidden;
@@ -231,7 +153,7 @@
         .progress-fill {
             height: 100%;
             width: 0%;
-            transition: width 0.3s ease, background-color 0.3s ease;
+            transition: width 0.25s ease;
         }
 
         .fill-kcal { background: var(--gold); }
@@ -240,194 +162,478 @@
         .fill-carb { background: #6e7a94; }
         .fill-over { background: var(--magenta) !important; }
 
-        /* Блок гидратации Кералы */
-        .climate-bar {
+        /* Вода и климат */
+        .water-strip {
             background: var(--gold-dim);
-            border: 1px solid rgba(212, 175, 55, 0.35);
-            padding: 12px 16px;
-            border-radius: 6px;
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 8px 10px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.8rem;
         }
 
-        .climate-bar span strong {
-            color: var(--gold);
-        }
-
-        /* Быстрые пресеты */
-        .presets-wrap {
+        /* Горизонтальный свайп быстрых пресетов */
+        .presets-scroll {
             display: flex;
-            flex-wrap: wrap;
             gap: 8px;
-            margin-bottom: 16px;
+            overflow-x: auto;
+            padding-bottom: 6px;
+            margin-bottom: 8px;
+            scrollbar-width: none;
         }
 
-        .preset-btn {
-            font-size: 0.72rem;
-            padding: 7px 10px;
-            background: #181c26;
+        .presets-scroll::-webkit-scrollbar {
+            display: none;
         }
 
-        .preset-oil {
-            border-color: rgba(255, 42, 109, 0.4);
-            color: #ff7aa2;
-        }
-
-        /* Поиск и выбор продуктов */
-        .selector-panel {
+        .chip-btn {
+            flex: 0 0 auto;
             background: var(--bg-input);
-            padding: 16px;
-            border-radius: 6px;
-            margin-bottom: 20px;
             border: 1px solid var(--border);
-        }
-
-        .Quick-weights {
-            display: flex;
-            gap: 6px;
-            margin-top: 8px;
-            flex-wrap: wrap;
-        }
-
-        .Quick-weights button {
-            padding: 5px 9px;
-            font-size: 0.72rem;
-        }
-
-        /* Таблица съеденного */
-        table {
-            width: 100%;
-            border-collapse: collapse;
+            color: var(--text-main);
+            padding: 8px 12px;
+            border-radius: 8px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.82rem;
+            font-size: 0.72rem;
+            cursor: pointer;
+            white-space: nowrap;
         }
 
-        th {
-            text-align: left;
+        .chip-btn:active {
+            transform: scale(0.97);
+            border-color: var(--gold);
+        }
+
+        .chip-oil {
+            border-color: rgba(255, 42, 109, 0.45);
+            color: #ff85a9;
+        }
+
+        /* Фильтр категорий */
+        .cat-tabs {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .cat-tab {
+            background: #10131a;
+            border: 1px solid var(--border);
             color: var(--text-muted);
-            font-weight: 500;
-            padding: 10px 8px;
-            border-bottom: 1px solid var(--border);
+            padding: 7px 4px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.65rem;
+            text-align: center;
+            cursor: pointer;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .cat-tab.active {
+            border-color: var(--gold);
+            color: var(--gold);
+            background: var(--gold-dim);
+        }
+
+        /* Поля ввода (16px против авто-зума iOS) */
+        label {
+            display: block;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            font-family: 'JetBrains Mono', monospace;
+            margin-bottom: 4px;
+        }
+
+        input, select {
+            width: 100%;
+            max-width: 100%;
+            min-width: 0;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 11px 12px;
+            border-radius: 8px;
+            font-family: 'Inter', sans-serif;
+            font-size: 16px; /* КРИТИЧНО ДЛЯ IPHONE */
+            outline: none;
+            appearance: none;
+            -webkit-appearance: none;
+        }
+
+        select {
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23D4AF37' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 16px;
+            padding-right: 34px;
+            text-overflow: ellipsis;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+            min-width: 0;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        /* Быстрый выбор веса */
+        .weight-pills {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 6px;
+            margin: 10px 0;
+        }
+
+        .pill-btn {
+            background: #10131a;
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            padding: 8px 4px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 0.72rem;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .pill-btn.unit {
+            border-color: rgba(0, 240, 255, 0.3);
+            color: var(--cyan);
+        }
+
+        .btn-primary {
+            width: 100%;
+            background: var(--gold);
+            color: #000;
+            border: none;
+            padding: 13px;
+            border-radius: 8px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            cursor: pointer;
+        }
+
+        .btn-primary:active {
+            opacity: 0.85;
+        }
+
+        .btn-reset {
+            background: transparent;
+            border: 1px solid rgba(255, 42, 109, 0.45);
+            color: var(--magenta);
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.68rem;
             text-transform: uppercase;
         }
 
-        td {
-            padding: 12px 8px;
-            border-bottom: 1px solid #1c2029;
+        /* Список съеденного (мобильные карточки вместо таблицы) */
+        .log-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #1f2430;
+            gap: 8px;
         }
 
-        .td-name {
-            font-family: 'Inter', sans-serif;
-            font-weight: 500;
+        .log-item:last-child {
+            border-bottom: none;
+        }
+
+        .log-info {
+            min-width: 0;
+            flex: 1;
+        }
+
+        .log-title {
+            font-size: 0.85rem;
+            font-weight: 600;
             color: var(--text-main);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
-        .td-cat {
-            font-size: 0.68rem;
-            color: var(--sand);
-            display: block;
+        .log-meta {
             font-family: 'JetBrains Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .log-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-shrink: 0;
+        }
+
+        .log-kcal {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--gold);
         }
 
         .del-btn {
-            padding: 4px 8px;
-            font-size: 0.7rem;
-            background: transparent;
-            border-color: var(--border);
+            background: #1d222e;
+            border: 1px solid var(--border);
             color: var(--text-muted);
-        }
-
-        .del-btn:hover {
-            border-color: var(--magenta);
-            color: var(--magenta);
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 32px;
-            color: var(--text-muted);
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-        }
-
-        .custom-food-details {
-            margin-top: 16px;
-            border-top: 1px solid var(--border);
-            padding-top: 12px;
-        }
-
-        summary {
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.78rem;
-            color: var(--sand);
+            font-size: 0.75rem;
             cursor: pointer;
-            user-select: none;
+        }
+
+        /* Нижний Таб-бар */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(18, 21, 29, 0.96);
+            backdrop-filter: blur(10px);
+            border-top: 1px solid var(--border);
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            padding-bottom: var(--safe-bottom);
+            z-index: 100;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            padding: 12px 4px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            cursor: pointer;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 3px;
+        }
+
+        .nav-btn.active {
+            color: var(--gold);
+            font-weight: 700;
+        }
+
+        .nav-dot {
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: transparent;
+        }
+
+        .nav-btn.active .nav-dot {
+            background: var(--gold);
         }
     </style>
 </head>
 <body>
 
-<header>
-    <div>
-        <h1>KERALA MACRO ENGINE</h1>
-        <div class="subtitle">Система контроля КБЖУ // Локальная база продуктов Южной Индии</div>
-    </div>
-    <div style="display: flex; gap: 10px;">
-        <button class="btn-danger" onclick="clearLog()">Сбросить день</button>
-    </div>
-</header>
+<div class="app-container">
+    <header class="app-header">
+        <div>
+            <div class="app-title">KERALA MACRO</div>
+            <div class="app-sub" id="statusBadge">ОСТАЛОСЬ: 122Г БЕЛКА</div>
+        </div>
+        <button class="btn-reset" onclick="clearLog()">Сброс дня</button>
+    </header>
 
-<div class="grid-layout">
-    <!-- ЛЕВАЯ КОЛОНКА: ПАРАМЕТРЫ ТЕЛА -->
-    <div>
+    <!-- ВКЛАДКА 1: ТРЕКЕР И ДНЕВНИК -->
+    <div id="tab-tracker" class="tab-view active">
         <div class="card">
-            <div class="card-title">
-                <span>01 // Параметры и Цель</span>
+            <div class="macro-grid">
+                <div class="macro-box">
+                    <div class="macro-label">ККАЛ</div>
+                    <div class="macro-val"><span id="curKcal">0</span> <span class="macro-target">/ <span id="tarKcal">1758</span></span></div>
+                    <div class="progress-track"><div id="barKcal" class="progress-fill fill-kcal"></div></div>
+                </div>
+                <div class="macro-box">
+                    <div class="macro-label">БЕЛКИ (Г)</div>
+                    <div class="macro-val"><span id="curProt" style="color: var(--cyan);">0</span> <span class="macro-target">/ <span id="tarProt">122</span></span></div>
+                    <div class="progress-track"><div id="barProt" class="progress-fill fill-prot"></div></div>
+                </div>
+                <div class="macro-box">
+                    <div class="macro-label">ЖИРЫ (Г)</div>
+                    <div class="macro-val"><span id="curFat">0</span> <span class="macro-target">/ <span id="tarFat">68</span></span></div>
+                    <div class="progress-track"><div id="barFat" class="progress-fill fill-fat"></div></div>
+                </div>
+                <div class="macro-box">
+                    <div class="macro-label">УГЛЕВОДЫ (Г)</div>
+                    <div class="macro-val"><span id="curCarb">0</span> <span class="macro-target">/ <span id="tarCarb">165</span></span></div>
+                    <div class="progress-track"><div id="barCarb" class="progress-fill fill-carb"></div></div>
+                </div>
             </div>
+            <div class="water-strip">
+                <span>Вода (Керала): <strong id="waterNorm" style="color: var(--gold);">2.5</strong> л</span>
+                <span>Электролиты: <strong>1 Karikku</strong></span>
+            </div>
+        </div>
+
+        <!-- Быстрые комбо (горизонтальный свайп) -->
+        <div class="presets-scroll">
+            <button class="chip-btn chip-oil" onclick="addQuickOil()">+10г Масла (Кафе)</button>
+            <button class="chip-btn" onclick="addPreset('clean_bf')">3 Яйца + Овсянка + Банан</button>
+            <button class="chip-btn" onclick="addPreset('kerala_bf')">3 Appam + Egg Roast</button>
+            <button class="chip-btn" onclick="addPreset('fish_meals')">Matta Rice + Рыба + Маш</button>
+            <button class="chip-btn" onclick="addPreset('parotta_beef')">2 Parotta + Beef Roast</button>
+        </div>
+
+        <!-- Выбор продукта -->
+        <div class="card">
+            <div class="card-header">
+                <span>Добавить продукт</span>
+                <span id="foodMacroHint" style="color: var(--sand);">210 ккал / 100г</span>
+            </div>
+
+            <div class="cat-tabs">
+                <button class="cat-tab active" onclick="filterCat('ALL', this)">Все</button>
+                <button class="cat-tab" onclick="filterCat('БАЗА / УГЛИ', this)">Угли</button>
+                <button class="cat-tab" onclick="filterCat('МОРЕ И МЯСО', this)">Рыба/Мясо</button>
+                <button class="cat-tab" onclick="filterCat('БЕЛОК И БОБОВЫЕ', this)">Яйца/Бобы</button>
+            </div>
+
+            <div class="form-group">
+                <select id="foodSelect" onchange="updateDefaultWeight()"></select>
+            </div>
+
+            <div class="form-row" style="align-items: end; margin-bottom: 6px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label id="weightLabel">Вес (г)</label>
+                    <input type="number" id="foodWeight" value="50" inputmode="numeric">
+                </div>
+                <button class="btn-primary" onclick="addSelectedFood()">+ В дневник</button>
+            </div>
+
+            <div class="weight-pills">
+                <button class="pill-btn unit" onclick="setUnitPortion(1)" id="unitBtn1">1 шт</button>
+                <button class="pill-btn unit" onclick="setUnitPortion(2)" id="unitBtn2">2 шт</button>
+                <button class="pill-btn" onclick="setWeight(100)">100 г</button>
+                <button class="pill-btn" onclick="setWeight(150)">150 г</button>
+            </div>
+        </div>
+
+        <!-- Список за день -->
+        <div class="card">
+            <div class="card-header">
+                <span>Съедено за сегодня</span>
+                <span id="itemsCount" style="color: var(--text-muted);">0 поз.</span>
+            </div>
+            <div id="logContainer"></div>
+        </div>
+    </div>
+
+    <!-- ВКЛАДКА 2: СВОЙ ПРОДУКТ И СПРАВОЧНИК -->
+    <div id="tab-custom" class="tab-view">
+        <div class="card">
+            <div class="card-header"><span>Добавить свой продукт в базу</span></div>
+            <div class="form-group">
+                <label>Название продукта</label>
+                <input type="text" id="custName" placeholder="Напр. Творог Epigamia">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Ккал на 100г</label>
+                    <input type="number" id="custKcal" placeholder="120" inputmode="decimal">
+                </div>
+                <div class="form-group">
+                    <label>Станд. порция (г)</label>
+                    <input type="number" id="custPortion" value="100" inputmode="numeric">
+                </div>
+            </div>
+            <div class="form-row" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+                <div class="form-group">
+                    <label>Белки / 100г</label>
+                    <input type="number" id="custProt" placeholder="10" step="0.1" inputmode="decimal">
+                </div>
+                <div class="form-group">
+                    <label>Жиры / 100г</label>
+                    <input type="number" id="custFat" placeholder="4" step="0.1" inputmode="decimal">
+                </div>
+                <div class="form-group">
+                    <label>Угли / 100г</label>
+                    <input type="number" id="custCarb" placeholder="8" step="0.1" inputmode="decimal">
+                </div>
+            </div>
+            <button class="btn-primary" onclick="saveCustomFood()">Сохранить в мою базу</button>
+        </div>
+
+        <div class="card">
+            <div class="card-header"><span>Шпаргалка веса порций в Керале</span></div>
+            <div style="font-size: 0.78rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; display: flex; flex-direction: column; gap: 8px;">
+                <div><strong style="color: var(--sand);">1 Appam:</strong> ~50 г (105 ккал)</div>
+                <div><strong style="color: var(--sand);">1 Idiyappam:</strong> ~45 г (72 ккал)</div>
+                <div><strong style="color: var(--sand);">1 секция Puttu:</strong> ~150 г (290 ккал)</div>
+                <div><strong style="color: var(--sand);">1 Malabar Parotta:</strong> ~90 г (300 ккал, 12г жира)</div>
+                <div><strong style="color: var(--sand);">1 банан Nendran:</strong> ~130 г (150 ккал)</div>
+                <div><strong style="color: var(--sand);">1 ст. л. кокосового масла:</strong> 10 г (90 ккал)</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ВКЛАДКА 3: ПРОФИЛЬ И ЦЕЛЬ -->
+    <div id="tab-profile" class="tab-view">
+        <div class="card">
+            <div class="card-header"><span>Параметры тела и цель</span></div>
             <div class="form-row">
                 <div class="form-group">
                     <label>Пол</label>
                     <select id="gender" onchange="saveProfile()">
-                        <option value="m">Мужской</option>
+                        <option value="m" selected>Мужской</option>
                         <option value="f">Женский</option>
                     </select>
                 </div>
                 <div class="form-group">
-                    <label>Возраст (лет)</label>
-                    <input type="number" id="age" value="34" min="14" max="99" oninput="saveProfile()">
+                    <label>Возраст</label>
+                    <input type="number" id="age" value="34" inputmode="numeric" oninput="saveProfile()">
                 </div>
             </div>
             <div class="form-row">
                 <div class="form-group">
                     <label>Рост (см)</label>
-                    <input type="number" id="height" value="180" min="120" max="230" oninput="saveProfile()">
+                    <input type="number" id="height" value="178" inputmode="numeric" oninput="saveProfile()">
                 </div>
                 <div class="form-group">
                     <label>Вес (кг)</label>
-                    <input type="number" id="weight" value="78" min="35" max="200" step="0.5" oninput="saveProfile()">
+                    <input type="number" id="weight" value="68" step="0.5" inputmode="decimal" oninput="saveProfile()">
                 </div>
             </div>
             <div class="form-group">
                 <label>Активность</label>
                 <select id="activity" onchange="saveProfile()">
-                    <option value="1.2">Сидячая работа / монтаж за ноутбуком</option>
-                    <option value="1.375" selected>Съемочные дни / байк / 1-3 тренировки</option>
-                    <option value="1.55">Высокая (серфинг / зал 3-5 раз в неделю)</option>
-                    <option value="1.725">Экстремальная физическая нагрузка</option>
+                    <option value="1.2" selected>Сидячая работа / монтаж за ноутбуком</option>
+                    <option value="1.375">Съемочные дни / байк / 1-3 тренировки</option>
+                    <option value="1.55">Высокая (серфинг / зал 3-5 раз)</option>
+                    <option value="1.725">Экстремальная нагрузка</option>
                 </select>
             </div>
             <div class="form-group">
                 <label>Вектор формы</label>
                 <select id="goal" onchange="saveProfile()">
                     <option value="-0.18">Сушка / Дефицит (-18%)</option>
-                    <option value="-0.10">Рекомпозиция / Мягкий дефицит (-10%)</option>
-                    <option value="0" selected>Поддержка / Баланс энергии</option>
+                    <option value="-0.10" selected>Рекомпозиция / Мягкий дефицит (-10%)</option>
+                    <option value="0">Поддержка / Баланс энергии</option>
                     <option value="0.12">Набор сухой массы (+12%)</option>
                 </select>
             </div>
@@ -435,504 +641,75 @@
                 <label>Норма белка (г на 1 кг веса)</label>
                 <select id="protRatio" onchange="saveProfile()">
                     <option value="1.6">1.6 г/кг (Базовый тонус)</option>
-                    <option value="1.8" selected>1.8 г/кг (Оптимальный рабочий стандарт)</option>
+                    <option value="1.8" selected>1.8 г/кг (Оптимальный стандарт)</option>
                     <option value="2.1">2.1 г/кг (Сушка / Силовой цикл)</option>
                 </select>
             </div>
         </div>
-
-        <div class="card">
-            <div class="card-title">
-                <span>02 // Справочник порций (Керала)</span>
-            </div>
-            <div style="font-size: 0.78rem; color: var(--text-muted); font-family: 'JetBrains Mono', monospace; display: flex; flex-direction: column; gap: 8px;">
-                <div><strong style="color: var(--sand);">1 Appam:</strong> ~50 г (ок. 105 ккал)</div>
-                <div><strong style="color: var(--sand);">1 Idiyappam:</strong> ~45 г (ок. 72 ккал)</div>
-                <div><strong style="color: var(--sand);">1 секция Puttu:</strong> ~150 г (ок. 290 ккал)</div>
-                <div><strong style="color: var(--sand);">1 Malabar Parotta:</strong> ~90 г (ок. 300 ккал, 12г жира)</div>
-                <div><strong style="color: var(--sand);">1 банан Nendran:</strong> ~130 г (ок. 150 ккал)</div>
-                <div><strong style="color: var(--sand);">1 ст. л. кокосового масла:</strong> 10 г (90 ккал)</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ПРАВАЯ КОЛОНКА: ТРЕКЕР И ПРОДУКТЫ -->
-    <div>
-        <!-- СВОДКА ДНЯ -->
-        <div class="card">
-            <div class="card-title">
-                <span>03 // Баланс нутриентов за сегодня</span>
-                <span id="statusBadge" style="color: var(--cyan);">В РАМКАХ НОРМЫ</span>
-            </div>
-
-            <div class="macro-grid">
-                <div class="macro-box">
-                    <div class="macro-label">Калории (ккал)</div>
-                    <div class="macro-val"><span id="curKcal">0</span> <span class="macro-target">/ <span id="tarKcal">0</span></span></div>
-                    <div class="progress-track"><div id="barKcal" class="progress-fill fill-kcal"></div></div>
-                </div>
-                <div class="macro-box">
-                    <div class="macro-label">Белки (г)</div>
-                    <div class="macro-val"><span id="curProt" style="color: var(--cyan);">0</span> <span class="macro-target">/ <span id="tarProt">0</span></span></div>
-                    <div class="progress-track"><div id="barProt" class="progress-fill fill-prot"></div></div>
-                </div>
-                <div class="macro-box">
-                    <div class="macro-label">Жиры (г)</div>
-                    <div class="macro-val"><span id="curFat">0</span> <span class="macro-target">/ <span id="tarFat">0</span></span></div>
-                    <div class="progress-track"><div id="barFat" class="progress-fill fill-fat"></div></div>
-                </div>
-                <div class="macro-box">
-                    <div class="macro-label">Углеводы (г)</div>
-                    <div class="macro-val"><span id="curCarb">0</span> <span class="macro-target">/ <span id="tarCarb">0</span></span></div>
-                    <div class="progress-track"><div id="barCarb" class="progress-fill fill-carb"></div></div>
-                </div>
-            </div>
-
-            <div class="climate-bar">
-                <span>ТРОПИЧЕСКИЙ РЕЖИМ (КЕРАЛА): Вода <strong id="waterNorm">2.8</strong> л/день</span>
-                <span>Электролиты: <strong>1 Karikku (кокос)</strong> или щепотка соли утром</span>
-            </div>
-        </div>
-
-        <!-- ДОБАВЛЕНИЕ В РАЦИОН -->
-        <div class="card">
-            <div class="card-title">
-                <span>04 // Конструктор приема пищи</span>
-            </div>
-
-            <div style="margin-bottom: 10px; font-family: 'JetBrains Mono', monospace; font-size: 0.72rem; color: var(--text-muted);">
-                БЫСТРЫЕ КОМБО И ПОПРАВКИ НА КАФЕ (1 КЛИК):
-            </div>
-            <div class="presets-wrap">
-                <button class="preset-btn" onclick="addPreset('kerala_bf')">[Завтрак: 3 Appam + Egg Roast]</button>
-                <button class="preset-btn" onclick="addPreset('clean_bf')">[База: 3 Яйца + Овсянка 60г + Nendran]</button>
-                <button class="preset-btn" onclick="addPreset('fish_meals')">[Обед: Matta Rice 200г + Рыба 150г + Маш]</button>
-                <button class="preset-btn" onclick="addPreset('parotta_beef')">[Ужин: 2 Parotta + Beef Roast 150г]</button>
-                <button class="preset-btn preset-oil" onclick="addQuickOil()">[+10г Кокосового масла (ел в кафе)]</button>
-            </div>
-
-            <div class="selector-panel">
-                <div class="form-row" style="grid-template-columns: 2fr 1fr;">
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label>Выбери продукт из базы Кералы</label>
-                        <select id="foodSelect" onchange="updateDefaultWeight()"></select>
-                    </div>
-                    <div class="form-group" style="margin-bottom: 0;">
-                        <label id="weightLabel">Вес (г)</label>
-                        <input type="number" id="foodWeight" value="150" min="5" max="2000" step="5">
-                    </div>
-                </div>
-
-                <div class="Quick-weights">
-                    <button onclick="setWeight(50)">50 г</button>
-                    <button onclick="setWeight(100)">100 г</button>
-                    <button onclick="setWeight(150)">150 г</button>
-                    <button onclick="setWeight(200)">200 г</button>
-                    <button onclick="setUnitPortion(1)" id="unitBtn1">1 шт/порц</button>
-                    <button onclick="setUnitPortion(2)" id="unitBtn2">2 шт/порц</button>
-                    <button onclick="setUnitPortion(3)" id="unitBtn3">3 шт/порц</button>
-                </div>
-
-                <div style="margin-top: 14px;">
-                    <button class="btn-primary" onclick="addSelectedFood()">Добавить в дневник</button>
-                </div>
-
-                <details class="custom-food-details">
-                    <summary>+ Добавить свой продукт в базу (сохранится в браузере)</summary>
-                    <div class="form-row" style="margin-top: 12px;">
-                        <div class="form-group">
-                            <label>Название продукта</label>
-                            <input type="text" id="custName" placeholder="Напр. Творог Epigamia">
-                        </div>
-                        <div class="form-group">
-                            <label>Стандартная порция (г)</label>
-                            <input type="number" id="custPortion" value="100">
-                        </div>
-                    </div>
-                    <div class="form-row" style="grid-template-columns: repeat(4, 1fr);">
-                        <div class="form-group">
-                            <label>Ккал / 100г</label>
-                            <input type="number" id="custKcal" placeholder="120">
-                        </div>
-                        <div class="form-group">
-                            <label>Белки / 100г</label>
-                            <input type="number" id="custProt" placeholder="10" step="0.1">
-                        </div>
-                        <div class="form-group">
-                            <label>Жиры / 100г</label>
-                            <input type="number" id="custFat" placeholder="4" step="0.1">
-                        </div>
-                        <div class="form-group">
-                            <label>Угли / 100г</label>
-                            <input type="number" id="custCarb" placeholder="8" step="0.1">
-                        </div>
-                    </div>
-                    <button onclick="saveCustomFood()" style="width: 100%;">Сохранить продукт в список</button>
-                </details>
-            </div>
-
-            <!-- ТАБЛИЦА ЛОГА -->
-            <div id="logContainer"></div>
-        </div>
     </div>
 </div>
 
+<!-- Нижняя навигация -->
+<nav class="bottom-nav">
+    <button class="nav-btn active" onclick="switchTab('tab-tracker', this)">
+        <span>Дневник</span>
+        <div class="nav-dot"></div>
+    </button>
+    <button class="nav-btn" onclick="switchTab('tab-custom', this)">
+        <span>+ Своя еда</span>
+        <div class="nav-dot"></div>
+    </button>
+    <button class="nav-btn" onclick="switchTab('tab-profile', this)">
+        <span>Профиль</span>
+        <div class="nav-dot"></div>
+    </button>
+</nav>
+
 <script>
-    // База продуктов Кералы (значения на 100 г + вес стандартной штуки/порции)
+    // Инициализация Telegram Mini App
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    if (tg) {
+        tg.ready();
+        tg.expand();
+        if (tg.disableVerticalSwipes) tg.disableVerticalSwipes();
+    }
+
+    function haptic() {
+        if (tg && tg.HapticFeedback) {
+            tg.HapticFeedback.impactOccurred('light');
+        }
+    }
+
     const defaultFoods = [
-        // УГЛЕВОДЫ И БАЗА КЕРАЛЫ
-        { id: 'appam', cat: 'БАЗА / УГЛИ', name: 'Appam (Аппам на кокосовом молоке)', kcal: 210, p: 3.8, f: 4.2, c: 39.0, unitW: 50, unitName: '1 шт (50г)' },
-        { id: 'puttu', cat: 'БАЗА / УГЛИ', name: 'Puttu (Путту рисовый с тертым кокосом)', kcal: 195, p: 3.5, f: 4.5, c: 35.0, unitW: 150, unitName: '1 цилиндр (150г)' },
-        { id: 'idiyappam', cat: 'БАЗА / УГЛИ', name: 'Idiyappam (Рисовая лапша на пару)', kcal: 160, p: 3.0, f: 1.0, c: 35.0, unitW: 45, unitName: '1 шт (45г)' },
-        { id: 'matta', cat: 'БАЗА / УГЛИ', name: 'Matta Rice (Красный керальский рис, вареный)', kcal: 115, p: 2.5, f: 0.4, c: 25.0, unitW: 200, unitName: '1 тарелка (200г)' },
-        { id: 'parotta', cat: 'БАЗА / УГЛИ', name: 'Malabar Parotta (Слоеная парота)', kcal: 330, p: 6.5, f: 13.0, c: 46.0, unitW: 90, unitName: '1 шт (90г)' },
+        { id: 'appam', cat: 'БАЗА / УГЛИ', name: 'Appam (Аппам)', kcal: 210, p: 3.8, f: 4.2, c: 39.0, unitW: 50, unitName: '1 шт (50г)' },
+        { id: 'puttu', cat: 'БАЗА / УГЛИ', name: 'Puttu (Путту с кокосом)', kcal: 195, p: 3.5, f: 4.5, c: 35.0, unitW: 150, unitName: '1 секция (150г)' },
+        { id: 'idiyappam', cat: 'БАЗА / УГЛИ', name: 'Idiyappam (Рисовая лапша)', kcal: 160, p: 3.0, f: 1.0, c: 35.0, unitW: 45, unitName: '1 шт (45г)' },
+        { id: 'matta', cat: 'БАЗА / УГЛИ', name: 'Matta Rice (Красный рис)', kcal: 115, p: 2.5, f: 0.4, c: 25.0, unitW: 200, unitName: 'порция (200г)' },
+        { id: 'parotta', cat: 'БАЗА / УГЛИ', name: 'Malabar Parotta (Парота)', kcal: 330, p: 6.5, f: 13.0, c: 46.0, unitW: 90, unitName: '1 шт (90г)' },
         { id: 'idli', cat: 'БАЗА / УГЛИ', name: 'Idli (Идли на пару)', kcal: 145, p: 4.5, f: 0.5, c: 30.0, unitW: 45, unitName: '1 шт (45г)' },
-        { id: 'dosa_masala', cat: 'БАЗА / УГЛИ', name: 'Masala Dosa (Доса с картофельной масалой)', kcal: 215, p: 4.5, f: 7.5, c: 32.0, unitW: 180, unitName: '1 доса (180г)' },
-        { id: 'dosa_plain', cat: 'БАЗА / УГЛИ', name: 'Plain / Ghee Dosa (Тонкая доса)', kcal: 195, p: 4.2, f: 6.0, c: 31.0, unitW: 110, unitName: '1 доса (110г)' },
+        { id: 'dosa_masala', cat: 'БАЗА / УГЛИ', name: 'Masala Dosa (Масала доса)', kcal: 215, p: 4.5, f: 7.5, c: 32.0, unitW: 180, unitName: '1 шт (180г)' },
+        { id: 'dosa_plain', cat: 'БАЗА / УГЛИ', name: 'Plain / Ghee Dosa', kcal: 195, p: 4.2, f: 6.0, c: 31.0, unitW: 110, unitName: '1 шт (110г)' },
         { id: 'kappa', cat: 'БАЗА / УГЛИ', name: 'Kappa (Тапиока отварная)', kcal: 160, p: 1.4, f: 0.3, c: 38.0, unitW: 150, unitName: 'порция (150г)' },
-        { id: 'oats', cat: 'БАЗА / УГЛИ', name: 'Овсянка (сухой вес до варки)', kcal: 370, p: 12.5, f: 6.2, c: 61.0, unitW: 60, unitName: 'порция (60г)' },
+        { id: 'oats', cat: 'БАЗА / УГЛИ', name: 'Овсянка (сухой вес)', kcal: 370, p: 12.5, f: 6.2, c: 61.0, unitW: 60, unitName: 'порция (60г)' },
 
-        // РЫБА, МОРЕПРОДУКТЫ И МЯСО
-        { id: 'neymeen', cat: 'МОРЕ И МЯСО', name: 'Neymeen / Seer Fish (Макрель стейк, гриль/тава)', kcal: 145, p: 21.5, f: 6.0, c: 0.5, unitW: 150, unitName: '1 стейк (150г)' },
-        { id: 'ayala_curry', cat: 'МОРЕ И МЯСО', name: 'Ayala / Mackerel (Скумбрия в карри)', kcal: 185, p: 19.0, f: 11.5, c: 1.5, unitW: 150, unitName: '1 рыба (150г)' },
-        { id: 'mathi_curry', cat: 'МОРЕ И МЯСО', name: 'Mathi Curry (Сардины тушеные в карри)', kcal: 165, p: 19.5, f: 9.0, c: 1.5, unitW: 150, unitName: 'порция (150г)' },
-        { id: 'mathi_fry', cat: 'МОРЕ И МЯСО', name: 'Mathi Fry (Сардины жареные в кокос. масле)', kcal: 245, p: 21.0, f: 17.0, c: 2.0, unitW: 100, unitName: 'порция (100г)' },
-        { id: 'chemmeen', cat: 'МОРЕ И МЯСО', name: 'Chemmeen Roast (Креветки со специями)', kcal: 140, p: 20.0, f: 5.5, c: 2.5, unitW: 150, unitName: 'порция (150г)' },
-        { id: 'calamari', cat: 'МОРЕ И МЯСО', name: 'Koonthal / Squid Roast (Кальмар роаст)', kcal: 135, p: 18.5, f: 5.0, c: 4.0, unitW: 150, unitName: 'порция (150г)' },
-        { id: 'beef_roast', cat: 'МОРЕ И МЯСО', name: 'Kerala Beef Roast / Ularthiyathu (Говядина)', kcal: 255, p: 24.0, f: 16.0, c: 3.5, unitW: 150, unitName: 'порция (150г)' },
-        { id: 'chk_curry', cat: 'МОРЕ И МЯСО', name: 'Kerala Chicken Curry (Курица на кокос. молоке)', kcal: 185, p: 18.5, f: 11.0, c: 3.0, unitW: 150, unitName: 'порция (150г)' },
-        { id: 'chk_breast', cat: 'МОРЕ И МЯСО', name: 'Куриное филе / грудка (чистая без соуса)', kcal: 165, p: 31.0, f: 3.6, c: 0.0, unitW: 150, unitName: 'филе (150г)' },
+        { id: 'neymeen', cat: 'МОРЕ И МЯСО', name: 'Neymeen / Seer Fish (Гриль)', kcal: 145, p: 21.5, f: 6.0, c: 0.5, unitW: 150, unitName: 'стейк (150г)' },
+        { id: 'ayala_curry', cat: 'МОРЕ И МЯСО', name: 'Ayala (Скумбрия в карри)', kcal: 185, p: 19.0, f: 11.5, c: 1.5, unitW: 150, unitName: 'порция (150г)' },
+        { id: 'mathi_curry', cat: 'МОРЕ И МЯСО', name: 'Mathi Curry (Сардины карри)', kcal: 165, p: 19.5, f: 9.0, c: 1.5, unitW: 150, unitName: 'порция (150г)' },
+        { id: 'mathi_fry', cat: 'МОРЕ И МЯСО', name: 'Mathi Fry (Рыба фрай в масле)', kcal: 245, p: 21.0, f: 17.0, c: 2.0, unitW: 100, unitName: 'порция (100г)' },
+        { id: 'chemmeen', cat: 'МОРЕ И МЯСО', name: 'Chemmeen Roast (Креветки)', kcal: 140, p: 20.0, f: 5.5, c: 2.5, unitW: 150, unitName: 'порция (150г)' },
+        { id: 'calamari', cat: 'МОРЕ И МЯСО', name: 'Koonthal Roast (Кальмар)', kcal: 135, p: 18.5, f: 5.0, c: 4.0, unitW: 150, unitName: 'порция (150г)' },
+        { id: 'beef_roast', cat: 'МОРЕ И МЯСО', name: 'Kerala Beef Roast (Говядина)', kcal: 255, p: 24.0, f: 16.0, c: 3.5, unitW: 150, unitName: 'порция (150г)' },
+        { id: 'chk_curry', cat: 'МОРЕ И МЯСО', name: 'Kerala Chicken Curry', kcal: 185, p: 18.5, f: 11.0, c: 3.0, unitW: 150, unitName: 'порция (150г)' },
+        { id: 'chk_breast', cat: 'МОРЕ И МЯСО', name: 'Куриное филе (чистое)', kcal: 165, p: 31.0, f: 3.6, c: 0.0, unitW: 150, unitName: 'филе (150г)' },
 
-        // ЯЙЦА, БОБОВЫЕ, МОЛОЧКА, ПРОТЕИН
-        { id: 'eggs', cat: 'БЕЛОК И БОБОВЫЕ', name: 'Яйца куриные (вареные / омлет без масла)', kcal: 155, p: 12.6, f: 10.6, c: 1.1, unitW: 55, unitName: '1 яйцо (55г)' },
-        { id: 'egg_roast', cat: 'БЕЛОК И БОБОВЫЕ', name: 'Kerala Egg Roast (Яйца с луково-томатной масалой)', kcal: 170, p: 10.0, f: 12.0, c: 5.5, unitW: 180, unitName: '2 яйца с соусом (180г)' },
-        { id: 'kadala', cat: 'БЕЛОК И БОБОВЫЕ', name: 'Kadala Curry (Черный нут в кокосовом соусе)', kcal: 150, p: 7.5, f: 5.5, c: 18.0, unitW: 150, unitName: 'порция (150г)' },
-        { id: 'cherupayar', cat: 'БЕЛОК И БОБОВЫЕ', name: 'Cherupayar / Moong Dal (Зеленый маш тушеный)', kcal: 135, p: 8.5, f: 3.5, c: 17.5, unitW: 150, unitName: 'порция (150г)' },
-        { id: 'sambar', cat: 'БЕЛОК И БОБОВЫЕ', name: 'Sambar (Чечевично-овощной суп самбар)', kcal: 65, p: 3.0, f: 1.8, c: 9.5, unitW: 150, unitName: 'пиала (150г)' },
+        { id: 'eggs', cat: 'БЕЛОК И БОБОВЫЕ', name: 'Яйца куриные (вар./омлет)', kcal: 155, p: 12.6, f: 10.6, c: 1.1, unitW: 55, unitName: '1 яйцо (55г)' },
+        { id: 'egg_roast', cat: 'БЕЛОК И БОБОВЫЕ', name: 'Kerala Egg Roast (2 яйца)', kcal: 170, p: 10.0, f: 12.0, c: 5.5, unitW: 180, unitName: 'порция (180г)' },
+        { id: 'kadala', cat: 'БЕЛОК И БОБОВЫЕ', name: 'Kadala Curry (Черный нут)', kcal: 150, p: 7.5, f: 5.5, c: 18.0, unitW: 150, unitName: 'порция (150г)' },
+        { id: 'cherupayar', cat: 'БЕЛОК И БОБОВЫЕ', name: 'Cherupayar (Зеленый маш)', kcal: 135, p: 8.5, f: 3.5, c: 17.5, unitW: 150, unitName: 'порция (150г)' },
+        { id: 'sambar', cat: 'БЕЛОК И БОБОВЫЕ', name: 'Sambar (Чечевичный суп)', kcal: 65, p: 3.0, f: 1.8, c: 9.5, unitW: 150, unitName: 'пиала (150г)' },
         { id: 'paneer', cat: 'БЕЛОК И БОБОВЫЕ', name: 'Paneer (Свежий панир)', kcal: 295, p: 18.5, f: 22.0, c: 3.5, unitW: 100, unitName: 'брусок (100г)' },
-        { id: 'curd', cat: 'БЕЛОК И БОБОВЫЕ', name: 'Curd / Dahi (Местный несладкий йогурт)', kcal: 65, p: 3.5, f: 4.0, c: 4.5, unitW: 150, unitName: 'стакан (150г)' },
-        { id: 'whey', cat: 'БЕЛОК И БОБОВЫЕ', name: 'Whey Protein (Сывороточный протеин, порошок)', kcal: 390, p: 78.0, f: 5.0, c: 7.0, unitW: 30, unitName: '1 скуп (30г)' },
+        { id: 'curd', cat: 'БЕЛОК И БОБОВЫЕ', name: 'Curd / Dahi (Йогурт)', kcal: 65, p: 3.5, f: 4.0, c: 4.5, unitW: 150, unitName: 'стакан (150г)' },
+        { id: 'whey', cat: 'БЕЛОК И БОБОВЫЕ', name: 'Whey Протеин (порошок)', kcal: 390, p: 78.0, f: 5.0, c: 7.0, unitW: 30, unitName: '1 скуп (30г)' },
 
-        // ФРУКТЫ, КОКОС, СКРЫТЫЕ ЖИРЫ
-        { id: 'coco_oil', cat: 'ЖИРЫ И ФРУКТЫ', name: 'Кокосовое масло (при готовке / жарке)', kcal: 899, p: 0.0, f: 99.9, c: 0.0, unitW: 10, unitName: '1 ст. ложка (10г)' },
-        { id: 'chutney', cat: 'ЖИРЫ И ФРУКТЫ', name: 'Coconut Chutney (Густой кокосовый чатни)', kcal: 280, p: 3.0, f: 26.0, c: 8.5, unitW: 40, unitName: 'порция (40г)' },
-        { id: 'thoran', cat: 'ЖИРЫ И ФРУКТЫ', name: 'Cabbage / Beans Thoran (Овощи с кокосом)', kcal: 95, p: 2.2, f: 6.5, c: 7.0, unitW: 100, unitName: 'гарнир (100г)' },
-        { id: 'nendran', cat: 'ЖИРЫ И ФРУКТЫ', name: 'Nendran Banana (Крупный желтый банан Кералы)', kcal: 115, p: 1.3, f: 0.3, c: 27.0, unitW: 130, unitName: '1 банан (130г)' },
-        { id: 'pazham_pori', cat: 'ЖИРЫ И ФРУКТЫ', name: 'Pazham Pori (Банан Nendran в кляре во фритюре)', kcal: 275, p: 3.2, f: 11.5, c: 40.0, unitW: 85, unitName: '1 шт (85г)' },
-        { id: 'karikku', cat: 'ЖИРЫ И ФРУКТЫ', name: 'Karikku / Tender Coconut (Вода + нежная мякоть)', kcal: 35, p: 0.8, f: 1.2, c: 5.5, unitW: 300, unitName: '1 кокос (300г)' },
-        { id: 'papaya', cat: 'ЖИРЫ И ФРУКТЫ', name: 'Папайя / Ананас / Арбуз (свежие)', kcal: 42, p: 0.5, f: 0.2, c: 10.5, unitW: 200, unitName: 'порция (200г)' },
-        { id: 'pappadam', cat: 'ЖИРЫ И ФРУКТЫ', name: 'Pappadam (Жареный паппадам)', kcal: 370, p: 18.0, f: 16.0, c: 38.0, unitW: 12, unitName: '1 шт (12г)' }
-    ];
-
-    let foodsDB = [];
-    let dailyLog = [];
-    let targets = { kcal: 2400, p: 140, f: 75, c: 280 };
-
-    function init() {
-        const savedCustom = JSON.parse(localStorage.getItem('kerala_custom_foods') || '[]');
-        foodsDB = [...defaultFoods, ...savedCustom];
-
-        const savedProfile = JSON.parse(localStorage.getItem('kerala_profile') || 'null');
-        if (savedProfile) {
-            document.getElementById('gender').value = savedProfile.gender;
-            document.getElementById('age').value = savedProfile.age;
-            document.getElementById('height').value = savedProfile.height;
-            document.getElementById('weight').value = savedProfile.weight;
-            document.getElementById('activity').value = savedProfile.activity;
-            document.getElementById('goal').value = savedProfile.goal;
-            document.getElementById('protRatio').value = savedProfile.protRatio;
-        }
-
-        dailyLog = JSON.parse(localStorage.getItem('kerala_daily_log') || '[]');
-
-        populateFoodSelect();
-        calculateTargets();
-        renderLog();
-    }
-
-    function populateFoodSelect() {
-        const sel = document.getElementById('foodSelect');
-        sel.innerHTML = '';
-        const categories = [...new Set(foodsDB.map(f => f.cat))];
-
-        categories.forEach(cat => {
-            const group = document.createElement('optgroup');
-            group.label = cat;
-            foodsDB.filter(f => f.cat === cat).forEach(item => {
-                const opt = document.createElement('option');
-                opt.value = item.id;
-                opt.textContent = `${item.name} — ${item.kcal} ккал (Б:${item.p} Ж:${item.f} У:${item.c})`;
-                group.appendChild(opt);
-            });
-            sel.appendChild(group);
-        });
-        updateDefaultWeight();
-    }
-
-    function updateDefaultWeight() {
-        const id = document.getElementById('foodSelect').value;
-        const item = foodsDB.find(f => f.id === id);
-        if (!item) return;
-        document.getElementById('foodWeight').value = item.unitW;
-        document.getElementById('weightLabel').textContent = `Вес (г) // станд: ${item.unitName}`;
-        document.getElementById('unitBtn1').textContent = `1x (${item.unitW}г)`;
-        document.getElementById('unitBtn2').textContent = `2x (${item.unitW * 2}г)`;
-        document.getElementById('unitBtn3').textContent = `3x (${item.unitW * 3}г)`;
-    }
-
-    function setWeight(w) {
-        document.getElementById('foodWeight').value = w;
-    }
-
-    function setUnitPortion(mult) {
-        const id = document.getElementById('foodSelect').value;
-        const item = foodsDB.find(f => f.id === id);
-        if (item) {
-            document.getElementById('foodWeight').value = item.unitW * mult;
-        }
-    }
-
-    function saveProfile() {
-        const profile = {
-            gender: document.getElementById('gender').value,
-            age: parseFloat(document.getElementById('age').value) || 34,
-            height: parseFloat(document.getElementById('height').value) || 180,
-            weight: parseFloat(document.getElementById('weight').value) || 78,
-            activity: parseFloat(document.getElementById('activity').value) || 1.375,
-            goal: parseFloat(document.getElementById('goal').value) || 0,
-            protRatio: parseFloat(document.getElementById('protRatio').value) || 1.8
-        };
-        localStorage.setItem('kerala_profile', JSON.stringify(profile));
-        calculateTargets();
-        renderLog();
-    }
-
-    function calculateTargets() {
-        const gender = document.getElementById('gender').value;
-        const age = parseFloat(document.getElementById('age').value) || 34;
-        const height = parseFloat(document.getElementById('height').value) || 180;
-        const weight = parseFloat(document.getElementById('weight').value) || 78;
-        const activity = parseFloat(document.getElementById('activity').value) || 1.375;
-        const goal = parseFloat(document.getElementById('goal').value) || 0;
-        const protRatio = parseFloat(document.getElementById('protRatio').value) || 1.8;
-
-        // Формула Миффлина - Сан-Жеора
-        let bmr = (10 * weight) + (6.25 * height) - (5 * age);
-        bmr += (gender === 'm') ? 5 : -161;
-
-        const tdee = bmr * activity;
-        const targetKcal = Math.round(tdee * (1 + goal));
-        const targetProt = Math.round(weight * protRatio);
-        // Жиры: 1 г на кг веса
-        const targetFat = Math.round(weight * 1.0);
-        // Остаток калорий в углеводы
-        const usedKcal = (targetProt * 4) + (targetFat * 9);
-        const targetCarb = Math.max(50, Math.round((targetKcal - usedKcal) / 4));
-
-        targets = { kcal: targetKcal, p: targetProt, f: targetFat, c: targetCarb };
-
-        document.getElementById('tarKcal').textContent = targets.kcal;
-        document.getElementById('tarProt').textContent = targets.p;
-        document.getElementById('tarFat').textContent = targets.f;
-        document.getElementById('tarCarb').textContent = targets.c;
-
-        // Вода для климата Кералы: 37 мл на кг веса
-        const water = ((weight * 37) / 1000).toFixed(1);
-        document.getElementById('waterNorm').textContent = water;
-    }
-
-    function addFoodById(id, weight) {
-        const item = foodsDB.find(f => f.id === id);
-        if (!item || weight <= 0) return;
-        const ratio = weight / 100;
-        dailyLog.push({
-            uid: Date.now() + Math.random(),
-            name: item.name,
-            cat: item.cat,
-            weight: Math.round(weight),
-            kcal: Math.round(item.kcal * ratio),
-            p: +(item.p * ratio).toFixed(1),
-            f: +(item.f * ratio).toFixed(1),
-            c: +(item.c * ratio).toFixed(1)
-        });
-        saveAndRender();
-    }
-
-    function addSelectedFood() {
-        const id = document.getElementById('foodSelect').value;
-        const weight = parseFloat(document.getElementById('foodWeight').value) || 100;
-        addFoodById(id, weight);
-    }
-
-    function addQuickOil() {
-        addFoodById('coco_oil', 10);
-    }
-
-    function addPreset(type) {
-        if (type === 'kerala_bf') {
-            addFoodById('appam', 150);
-            addFoodById('egg_roast', 180);
-        } else if (type === 'clean_bf') {
-            addFoodById('eggs', 165);
-            addFoodById('oats', 60);
-            addFoodById('nendran', 130);
-        } else if (type === 'fish_meals') {
-            addFoodById('matta', 200);
-            addFoodById('neymeen', 150);
-            addFoodById('cherupayar', 120);
-        } else if (type === 'parotta_beef') {
-            addFoodById('parotta', 180);
-            addFoodById('beef_roast', 150);
-        }
-    }
-
-    function removeEntry(uid) {
-        dailyLog = dailyLog.filter(item => item.uid !== uid);
-        saveAndRender();
-    }
-
-    function clearLog() {
-        dailyLog = [];
-        saveAndRender();
-    }
-
-    function saveCustomFood() {
-        const name = document.getElementById('custName').value.trim();
-        const unitW = parseFloat(document.getElementById('custPortion').value) || 100;
-        const kcal = parseFloat(document.getElementById('custKcal').value) || 0;
-        const p = parseFloat(document.getElementById('custProt').value) || 0;
-        const f = parseFloat(document.getElementById('custFat').value) || 0;
-        const c = parseFloat(document.getElementById('custCarb').value) || 0;
-
-        if (!name) return;
-
-        const newFood = {
-            id: 'cust_' + Date.now(),
-            cat: 'МОИ ПРОДУКТЫ',
-            name: name,
-            kcal: kcal,
-            p: p,
-            f: f,
-            c: c,
-            unitW: unitW,
-            unitName: `порция (${unitW}г)`
-        };
-
-        const savedCustom = JSON.parse(localStorage.getItem('kerala_custom_foods') || '[]');
-        savedCustom.push(newFood);
-        localStorage.setItem('kerala_custom_foods', JSON.stringify(savedCustom));
-
-        foodsDB.push(newFood);
-        populateFoodSelect();
-        document.getElementById('foodSelect').value = newFood.id;
-        updateDefaultWeight();
-
-        document.getElementById('custName').value = '';
-        document.getElementById('custKcal').value = '';
-        document.getElementById('custProt').value = '';
-        document.getElementById('custFat').value = '';
-        document.getElementById('custCarb').value = '';
-    }
-
-    function saveAndRender() {
-        localStorage.setItem('kerala_daily_log', JSON.stringify(dailyLog));
-        renderLog();
-    }
-
-    function renderLog() {
-        let totKcal = 0, totP = 0, totF = 0, totC = 0;
-
-        dailyLog.forEach(item => {
-            totKcal += item.kcal;
-            totP += item.p;
-            totF += item.f;
-            totC += item.c;
-        });
-
-        totP = Math.round(totP);
-        totF = Math.round(totF);
-        totC = Math.round(totC);
-
-        document.getElementById('curKcal').textContent = totKcal;
-        document.getElementById('curProt').textContent = totP;
-        document.getElementById('curFat').textContent = totF;
-        document.getElementById('curCarb').textContent = totC;
-
-        updateBar('barKcal', totKcal, targets.kcal, false);
-        updateBar('barProt', totP, targets.p, true);
-        updateBar('barFat', totF, targets.f, false);
-        updateBar('barCarb', totC, targets.c, false);
-
-        const badge = document.getElementById('statusBadge');
-        if (totKcal > targets.kcal * 1.05) {
-            badge.textContent = 'ПЕРЕБОР ПО КАЛОРИЯМ';
-            badge.style.color = 'var(--magenta)';
-        } else if (totP >= targets.p * 0.9) {
-            badge.textContent = 'НОРМА БЕЛКА ВЫПОЛНЕНА';
-            badge.style.color = 'var(--cyan)';
-        } else {
-            badge.textContent = `ОСТАЛОСЬ ДОБРАТЬ: ${Math.max(0, targets.p - totP)}Г БЕЛКА`;
-            badge.style.color = 'var(--gold)';
-        }
-
-        const container = document.getElementById('logContainer');
-        if (dailyLog.length === 0) {
-            container.innerHTML = `<div class="empty-state">Дневник пуст. Выбери продукты выше или нажми на быстрый пресет.</div>`;
-            return;
-        }
-
-        let html = `
-            <table>
-                <thead>
-                    <tr>
-                        <th>Продукт</th>
-                        <th>Вес</th>
-                        <th>Ккал</th>
-                        <th>Б</th>
-                        <th>Ж</th>
-                        <th>У</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-        `;
-
-        dailyLog.forEach(item => {
-            html += `
-                <tr>
-                    <td class="td-name">
-                        ${item.name}
-                        <span class="td-cat">${item.cat}</span>
-                    </td>
-                    <td>${item.weight} г</td>
-                    <td style="color: var(--gold); font-weight: 600;">${item.kcal}</td>
-                    <td style="color: var(--cyan);">${item.p}</td>
-                    <td>${item.f}</td>
-                    <td>${item.c}</td>
-                    <td style="text-align: right;">
-                        <button class="del-btn" onclick="removeEntry(${item.uid})">X</button>
-                    </td>
-                </tr>
-            `;
-        });
-
-        html += `</tbody></table>`;
-        container.innerHTML = html;
-    }
-
-    function updateBar(elId, current, target, isProtein) {
-        const el = document.getElementById(elId);
-        const pct = Math.min(100, Math.round((current / target) * 100));
-        el.style.width = pct + '%';
-        if (!isProtein && current > target * 1.08) {
-            el.classList.add('fill-over');
-        } else {
-            el.classList.remove('fill-over');
-        }
-    }
-
-    init();
-</script>
-
-</body>
-</html>
+        { id: 'coco_oil', cat: 'ЖИРЫ И ФРУКТЫ', name: 'Кокосовое масло', kcal: 899, p: 0.0, f: 99.9, c: 0.0, unitW: 10, unitName: '1 ст.л. (10г)' },
+        { id: 'ch
