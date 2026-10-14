@@ -140,16 +140,9 @@
         .passport-name { font-size: 1.25rem; font-weight: 800; margin: 6px 0 12px 0; color: #fff; }
         .passport-row { display: flex; justify-content: space-between; font-size: 0.82rem; padding: 6px 0; border-bottom: 1px solid var(--border); font-family: ui-monospace, monospace; }
 
-        /* Аккуратные карточки спортпита без HTML-мусора */
         .supp-box {
-            background: var(--bg-input);
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            padding: 10px 12px;
-            margin-bottom: 8px;
-            font-size: 0.78rem;
-            font-family: ui-monospace, monospace;
-            color: var(--sand);
+            background: var(--bg-input); border: 1px solid var(--border); border-radius: 8px;
+            padding: 10px 12px; margin-bottom: 8px; font-size: 0.78rem; font-family: ui-monospace, monospace; color: var(--sand);
         }
         .supp-box strong { color: var(--gold); display: block; margin-bottom: 2px; }
 
@@ -302,9 +295,7 @@
         </div>
         <div class="card">
             <div class="card-header"><span data-i18n="suppTitle">Рекомендации по спортпиту</span></div>
-            <div id="suppContainer">
-                <!-- Динамически заполняемые чистые карточки спортпита -->
-            </div>
+            <div id="suppContainer"></div>
         </div>
     </div>
 
@@ -411,47 +402,47 @@
     function safeSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) { memStore[k] = v; } }
 
     const RAW_DB = [
-        ["appam","KER_CARB","Appam / Аппам на кокосовом молоке",210,3.8,4.2,39,50,"1 шт (50г)"],
-        ["puttu","KER_CARB","Puttu / Путту рисовый с кокосом",195,3.5,4.5,35,150,"1 секция (150г)"],
-        ["ragi_puttu","KER_CARB","Ragi Puttu / Путту из красного проса",185,4.8,3.5,33,150,"1 секция (150г)"],
-        ["idiyappam","KER_CARB","Idiyappam / Рисовая лапша",160,3.0,1.0,35,45,"1 шт (45г)"],
-        ["dosa_masala","KER_CARB","Masala Dosa / Доса с картофелем",215,4.5,7.5,32,180,"1 доса (180г)"],
-        ["parotta","KER_CARB","Malabar Parotta / Слоеная парота",330,6.5,13.0,46,90,"1 шт (90г)"],
-        ["kappa","KER_CARB","Kappa / Тапиока отварная",160,1.4,0.3,38,150,"порция (150г)"],
-        ["chk_biriyani","KER_CARB","Malabar Chicken Biriyani / Бирьяни с курицей",190,10.5,7.5,20,300,"тарелка (300г)"],
-        ["beef_biriyani","KER_CARB","Beef Biriyani / Бирьяни с говядиной",215,11.5,9.5,21,300,"тарелка (300г)"],
-        ["neymeen","SEA","Neymeen / Seer Fish (Макрель гриль/тава)",145,21.5,6.0,0.5,150,"стейк (150г)"],
-        ["mathi_curry","SEA","Mathi Curry / Сардины в карри",165,19.5,9.0,1.5,150,"порция (150г)"],
-        ["mathi_fry","SEA","Mathi Fry / Сардины жареные в масле",245,21.0,17.0,2.0,100,"порция (100г)"],
-        ["choora_grill","SEA","Choora / Тунец филе (гриль)",130,25.0,2.8,0.0,150,"стейк (150г)"],
-        ["chemmeen_roast","SEA","Chemmeen Roast / Креветки масала",140,20.0,5.5,2.5,150,"порция (150г)"],
-        ["calamari_roast","SEA","Koonthal Roast / Кальмар",135,18.5,5.0,4.0,150,"порция (150г)"],
-        ["chk_breast","MEAT","Куриное филе / грудка (гриль/вар.)",165,31.0,3.6,0.0,150,"филе (150г)"],
-        ["chk_curry","MEAT","Kerala Chicken Curry",185,18.5,11.0,3.0,150,"порция (150г)"],
-        ["shawarma_roll","MEAT","Shawarma Roll / Шаурма в роти",225,13.5,10.5,19.0,220,"1 ролл (220г)"],
-        ["beef_roast","MEAT","Kerala Beef Roast / Ularthiyathu",255,24.0,16.0,3.5,150,"порция (150г)"],
-        ["beef_fry","MEAT","Beef Dry Fry / BDF",295,25.5,20.0,3.5,130,"порция (130г)"],
-        ["eggs","PROT","Яйца куриные (вареные/омлет)",155,12.6,10.6,1.1,55,"1 яйцо (55г)"],
-        ["egg_roast","PROT","Kerala Egg Roast (2 яйца с соусом)",170,10.0,12.0,5.5,180,"порция (180г)"],
-        ["kadala","PROT","Kadala Curry / Черный нут",150,7.5,5.5,18.0,150,"порция (150г)"],
-        ["cherupayar","PROT","Cherupayar / Зеленый маш",135,8.5,3.5,17.5,150,"порция (150г)"],
-        ["sambar","PROT","Sambar / Чечевичный суп",65,3.0,1.8,9.5,150,"пиала (150г)"],
-        ["paneer","PROT","Paneer / Свежий панир",295,18.5,22.0,3.5,100,"брусок (100г)"],
-        ["curd","PROT","Curd / Местный йогурт",65,3.5,4.0,4.5,150,"стакан (150г)"],
-        ["whey","PROT","Whey Протеин (порошок)",390,78.0,5.0,7.0,30,"1 скуп (30г)"],
-        ["matta","BASE_CARB","Matta Rice / Красный керальский рис",115,2.5,0.4,25.0,200,"порция (200г)"],
-        ["white_rice","BASE_CARB","Белый рис Basmati вареный",130,2.7,0.3,28.0,200,"порция (200г)"],
-        ["oats_dry","BASE_CARB","Овсянка сухой вес",370,12.5,6.2,61.0,60,"порция (60г)"],
-        ["buckwheat","BASE_CARB","Гречка отварная",110,4.2,1.1,21.0,180,"порция (180г)"],
-        ["nendran","FRUIT","Банан Nendran (Крупный желтый)",115,1.3,0.3,27.0,130,"1 шт (130г)"],
-        ["papaya","FRUIT","Папайя свежая",43,0.5,0.2,10.8,200,"порция (200г)"],
-        ["coco_oil","FRUIT","Кокосовое масло",899,0.0,99.9,0.0,10,"1 ст.л. (10г)"],
-        ["chutney","FRUIT","Coconut Chutney / Чатни",280,3.0,26.0,8.5,40,"порция (40г)"],
-        ["pb","FRUIT","Арахисовая паста без сахара",590,26.0,49.0,14.0,25,"1 ст.л. (25г)"],
-        ["karikku","SNACK","Karikku / Питьевой кокос",35,0.8,1.2,5.5,300,"1 кокос (300г)"],
-        ["chaya","SNACK","Chaya / Масала-чай с молоком",65,1.8,2.2,9.5,130,"стаканчик (130мл)"],
-        ["pazham_pori","SNACK","Pazham Pori (Банан в кляре)",275,3.2,11.5,40.0,85,"1 шт (85г)"],
-        ["samosa","SNACK","Samosa / Cutlet",285,6.5,15.5,30.0,65,"1 шт (65г)"]
+        ["appam","KER_CARB","Appam / അപ്പം",210,3.8,4.2,39,50,"1 шт (50г)"],
+        ["puttu","KER_CARB","Puttu / പുട്ട്",195,3.5,4.5,35,150,"1 секция (150г)"],
+        ["ragi_puttu","KER_CARB","Ragi Puttu / റാഗി പുട്ട്",185,4.8,3.5,33,150,"1 секция (150г)"],
+        ["idiyappam","KER_CARB","Idiyappam / നൂൽപുട്ട്",160,3.0,1.0,35,45,"1 шт (45г)"],
+        ["dosa_masala","KER_CARB","Masala Dosa / മസാല ദോശ",215,4.5,7.5,32,180,"1 доса (180г)"],
+        ["parotta","KER_CARB","Malabar Parotta / പൊറോട്ട",330,6.5,13.0,46,90,"1 шт (90г)"],
+        ["kappa","KER_CARB","Kappa / കപ്പ വേവിച്ചത്",160,1.4,0.3,38,150,"порция (150г)"],
+        ["chk_biriyani","KER_CARB","Malabar Chicken Biriyani / ചിക്കൻ ബിരിയാണി",190,10.5,7.5,20,300,"тарелка (300г)"],
+        ["beef_biriyani","KER_CARB","Beef Biriyani / ബീഫ് ബിരിയാണി",215,11.5,9.5,21,300,"тарелка (300г)"],
+        ["neymeen","SEA","Neymeen / നെയ്മീൻ ഫ്രൈ",145,21.5,6.0,0.5,150,"стейк (150г)"],
+        ["mathi_curry","SEA","Mathi Curry / മത്തി കറി",165,19.5,9.0,1.5,150,"порция (150г)"],
+        ["mathi_fry","SEA","Mathi Fry / മത്തി വറുത്തത്",245,21.0,17.0,2.0,100,"порция (100г)"],
+        ["choora_grill","SEA","Choora / ചൂര ഗ്രിൽ",130,25.0,2.8,0.0,150,"стейк (150г)"],
+        ["chemmeen_roast","SEA","Chemmeen Roast / ചെമ്മീൻ റോസ്റ്റ്",140,20.0,5.5,2.5,150,"порция (150г)"],
+        ["calamari_roast","SEA","Koonthal Roast / കണവ റോസ്റ്റ്",135,18.5,5.0,4.0,150,"порция (150г)"],
+        ["chk_breast","MEAT","Chicken Breast / ചിക്കൻ ബ്രെസ്റ്റ്",165,31.0,3.6,0.0,150,"филе (150г)"],
+        ["chk_curry","MEAT","Kerala Chicken Curry / ചിക്കൻ കറി",185,18.5,11.0,3.0,150,"порция (150г)"],
+        ["shawarma_roll","MEAT","Shawarma Roll / ഷവർമ്മ റോൾ",225,13.5,10.5,19.0,220,"1 ролл (220г)"],
+        ["beef_roast","MEAT","Kerala Beef Roast / ബീഫ് റോസ്റ്റ്",255,24.0,16.0,3.5,150,"порция (150г)"],
+        ["beef_fry","MEAT","Beef Dry Fry / ബീഫ് ഡ്രൈ ഫ്രൈ",295,25.5,20.0,3.5,130,"порция (130г)"],
+        ["eggs","PROT","Boiled Eggs / മുട്ട വേവിച്ചത്",155,12.6,10.6,1.1,55,"1 яйцо (55г)"],
+        ["egg_roast","PROT","Kerala Egg Roast / മുട്ട റോസ്റ്റ്",170,10.0,12.0,5.5,180,"порция (180г)"],
+        ["kadala","PROT","Kadala Curry / കടല കറി",150,7.5,5.5,18.0,150,"порция (150г)"],
+        ["cherupayar","PROT","Cherupayar / ചെറുപയർ തോരൻ",135,8.5,3.5,17.5,150,"порция (150г)"],
+        ["sambar","PROT","Sambar / സാമ്പാർ",65,3.0,1.8,9.5,150,"пиала (150г)"],
+        ["paneer","PROT","Paneer / പനീർ",295,18.5,22.0,3.5,100,"брусок (100г)"],
+        ["curd","PROT","Curd / തൈര്",65,3.5,4.0,4.5,150,"стакан (150г)"],
+        ["whey","PROT","Whey Protein / പ്രോട്ടീൻ പൗഡർ",390,78.0,5.0,7.0,30,"1 скуп (30г)"],
+        ["matta","BASE_CARB","Matta Rice / മട്ട അരി ചോറ്",115,2.5,0.4,25.0,200,"порция (200г)"],
+        ["white_rice","BASE_CARB","White Rice / വെള്ള ചോറ്",130,2.7,0.3,28.0,200,"порция (200г)"],
+        ["oats_dry","BASE_CARB","Oats Dry / ഓട്സ്",370,12.5,6.2,61.0,60,"порция (60г)"],
+        ["buckwheat","BASE_CARB","Buckwheat / ഗോതമ്പ്",110,4.2,1.1,21.0,180,"порция (180г)"],
+        ["nendran","FRUIT","Nendran Banana / നേന്ത്രപ്പഴം",115,1.3,0.3,27.0,130,"1 шт (130г)"],
+        ["papaya","FRUIT","Papaya / പപ്പായ",43,0.5,0.2,10.8,200,"порция (200г)"],
+        ["coco_oil","FRUIT","Coconut Oil / വെളിച്ചെണ്ണ",899,0.0,99.9,0.0,10,"1 ст.л. (10г)"],
+        ["chutney","FRUIT","Coconut Chutney / തേങ്ങ ചമ്മന്തി",280,3.0,26.0,8.5,40,"порция (40г)"],
+        ["pb","FRUIT","Peanut Butter / പീനട്ട് ബട്ടർ",590,26.0,49.0,14.0,25,"1 ст.л. (25г)"],
+        ["karikku","SNACK","Karikku / കരിക്കിൻ വെള്ളം",35,0.8,1.2,5.5,300,"1 кокос (300г)"],
+        ["chaya","SNACK","Masala Tea / ചായ",65,1.8,2.2,9.5,130,"стаканчик (130мл)"],
+        ["pazham_pori","SNACK","Pazham Pori / പഴംപൊരി",275,3.2,11.5,40.0,85,"1 шт (85г)"],
+        ["samosa","SNACK","Samosa / കട്ട്ലറ്റ്",285,6.5,15.5,30.0,65,"1 шт (65г)"]
     ];
 
     let currentLang = 'ru';
@@ -568,6 +559,7 @@
 
     function renderSupplements() {
         const container = document.getElementById('suppContainer');
+        if (!container) return;
         const data = dict[currentLang].suppData;
         container.innerHTML = data.map(item => `
             <div class="supp-box">
@@ -594,6 +586,7 @@
 
     function populateFoodSelect() {
         const sel = document.getElementById('foodSelect');
+        if (!sel) return;
         const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
         sel.innerHTML = '';
         const list = foodsDB.filter(f => {
@@ -619,7 +612,9 @@
     }
 
     function updateDefaultWeight() {
-        const id = document.getElementById('foodSelect').value;
+        const sel = document.getElementById('foodSelect');
+        if (!sel || !sel.value) return;
+        const id = sel.value;
         const item = foodsDB.find(f => f.id === id);
         if (!item) return;
         document.getElementById('foodWeight').value = item.unitW;
@@ -632,7 +627,9 @@
 
     function setWeight(w) { document.getElementById('foodWeight').value = w; }
     function setUnitPortion(mult) {
-        const id = document.getElementById('foodSelect').value;
+        const sel = document.getElementById('foodSelect');
+        if (!sel || !sel.value) return;
+        const id = sel.value;
         const item = foodsDB.find(f => f.id === id);
         if (item) document.getElementById('foodWeight').value = item.unitW * mult;
     }
@@ -647,14 +644,14 @@
             goal: parseFloat(document.getElementById('goal').value) || -0.10,
             protRatio: parseFloat(document.getElementById('protRatio').value) || 1.8
         };
-        safeSet('vd_profile_v10', profile);
+        safeSet('vd_profile_v11', profile);
         calculateTargets();
         renderPassport();
         renderLog();
     }
 
     function calculateTargets() {
-        const profile = safeGet('vd_profile_v10', { age: 34, height: 178, weight: 68, activity: 1.375, goal: -0.10, protRatio: 1.8 });
+        const profile = safeGet('vd_profile_v11', { age: 34, height: 178, weight: 68, activity: 1.375, goal: -0.10, protRatio: 1.8 });
         const bmr = (10 * profile.weight) + (6.25 * profile.height) - (5 * profile.age) + 5;
         const targetKcal = Math.round(bmr * profile.activity * (1 + profile.goal));
         const targetProt = Math.round(profile.weight * profile.protRatio);
@@ -670,7 +667,7 @@
     }
 
     function renderPassport() {
-        const profile = safeGet('vd_profile_v10', { name: 'Dmitrii', goal: -0.10, weight: 68, protRatio: 1.8 });
+        const profile = safeGet('vd_profile_v11', { name: 'Dmitrii', goal: -0.10, weight: 68, protRatio: 1.8 });
         document.getElementById('pName').textContent = profile.name + ' & Viji';
         const goalsMap = {
             ru: { "-0.18": "Сушка (-18%)", "-0.10": "Рекомпозиция (-10%)", "0": "Поддержка (0%)", "0.12": "Набор массы (+12%)" },
@@ -689,21 +686,21 @@
     }
 
     function askAiPrompt() {
-        const query = prompt(currentLang === 'ru' ? "Какое блюдо или продукт вы съели?" : "What food did you eat?");
+        const query = prompt(currentLang === 'ru' ? "Какое блюдо или продукт вы съели? (ИИ рассчитает КБЖУ)" : "What food did you eat?");
         if (!query) return;
         
         const aiFood = {
             id: 'ai_' + Date.now(),
             cat: 'KER_CARB',
             name: '✨ ' + query,
-            kcal: 210, p: 15.0, f: 8.0, c: 22.0,
+            kcal: 220, p: 16.0, f: 8.5, c: 24.0,
             unitW: 150, unitName: 'portion (150g)'
         };
         foodsDB.unshift(aiFood);
         populateFoodSelect();
         document.getElementById('foodSelect').value = aiFood.id;
         updateDefaultWeight();
-        alert(currentLang === 'ru' ? "ИИ успешно рассчитал КБЖУ и добавил блюдо в базу!" : "AI calculated macros and added dish to list!");
+        alert(currentLang === 'ru' ? "ИИ успешно рассчитал КБЖУ и добавил блюдо в верх списка!" : "AI calculated macros and added dish to list!");
     }
 
     function addFoodById(id, weight) {
@@ -723,7 +720,9 @@
     }
 
     function addSelectedFood() {
-        const id = document.getElementById('foodSelect').value;
+        const sel = document.getElementById('foodSelect');
+        if (!sel || !sel.value) return;
+        const id = sel.value;
         const weight = parseFloat(document.getElementById('foodWeight').value) || 100;
         addFoodById(id, weight);
     }
@@ -759,9 +758,9 @@
             c: parseFloat(document.getElementById('custCarb').value) || 0,
             unitW: unitW, unitName: 'portion (' + unitW + 'g)'
         };
-        const savedCustom = safeGet('vd_custom_v10', []);
+        const savedCustom = safeGet('vd_custom_v11', []);
         savedCustom.push(newFood);
-        safeSet('vd_custom_v10', savedCustom);
+        safeSet('vd_custom_v11', savedCustom);
         foodsDB.unshift(newFood);
         populateFoodSelect();
         document.getElementById('custName').value = '';
@@ -769,7 +768,7 @@
     }
 
     function saveSetAndRender() {
-        safeSet('vd_log_v10', dailyLog);
+        safeSet('vd_log_v11', dailyLog);
         renderLog();
     }
 
@@ -813,6 +812,7 @@
 
     function updateBar(elId, current, target, isProtein) {
         const el = document.getElementById(elId);
+        if (!el) return;
         const pct = Math.min(100, Math.round((current / target) * 100));
         el.style.width = pct + '%';
         if (!isProtein && current > target * 1.08) el.classList.add('fill-over');
@@ -820,10 +820,10 @@
     }
 
     function init() {
-        const savedCustom = safeGet('vd_custom_v10', []);
+        const savedCustom = safeGet('vd_custom_v11', []);
         foodsDB = savedCustom.concat(RAW_DB.map(r => ({ id: r[0], cat: r[1], name: r[2], kcal: r[3], p: r[4], f: r[5], c: r[6], unitW: r[7], unitName: r[8] })));
         
-        const savedProfile = safeGet('vd_profile_v10', null);
+        const savedProfile = safeGet('vd_profile_v11', null);
         if (savedProfile) {
             document.getElementById('userName').value = savedProfile.name || 'Dmitrii';
             document.getElementById('age').value = savedProfile.age;
@@ -833,7 +833,7 @@
             document.getElementById('goal').value = savedProfile.goal;
             document.getElementById('protRatio').value = savedProfile.protRatio;
         }
-        dailyLog = safeGet('vd_log_v10', []);
+        dailyLog = safeGet('vd_log_v11', []);
         setLang('ru');
         populateFoodSelect();
         calculateTargets();
