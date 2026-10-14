@@ -21,7 +21,7 @@
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         html, body {
             width: 100%; max-width: 100vw; overflow-x: hidden;
-            background-color: var(--bg-main); color: var(--text-main);
+            background-color: var(--bg-main) !important; color: var(--text-main) !important;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
             line-height: 1.4; padding-bottom: 90px;
         }
@@ -44,7 +44,7 @@
         .card {
             background: var(--bg-card); border: 1px solid var(--border);
             border-radius: 12px; padding: 16px; margin-bottom: 14px; width: 100%;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
         }
         .card-header {
             font-family: ui-monospace, monospace; font-size: 0.72rem;
@@ -56,7 +56,7 @@
         .macro-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 10px; }
         .macro-box { background: var(--bg-input); border: 1px solid var(--border); padding: 12px; border-radius: 8px; min-width: 0; }
         .macro-label { font-family: ui-monospace, monospace; font-size: 0.65rem; color: var(--text-muted); }
-        .macro-val { font-family: ui-monospace, monospace; font-size: 1.15rem; font-weight: 700; margin: 4px 0 6px 0; }
+        .macro-val { font-family: ui-monospace, monospace; font-size: 1.15rem; font-weight: 700; margin: 4px 0 6px 0; color: #fff; }
         .macro-target { font-size: 0.75rem; color: var(--text-muted); font-weight: 400; }
         
         .progress-track { height: 6px; background: #0c0e12; border-radius: 3px; overflow: hidden; }
@@ -70,7 +70,7 @@
         .water-strip {
             background: var(--gold-dim); border: 1px solid rgba(212, 175, 55, 0.3);
             padding: 10px 12px; border-radius: 8px; font-family: ui-monospace, monospace;
-            font-size: 0.74rem; display: flex; justify-content: space-between;
+            font-size: 0.74rem; display: flex; justify-content: space-between; color: var(--text-main);
         }
 
         .presets-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 8px; scrollbar-width: none; }
@@ -94,11 +94,11 @@
 
         label { display: block; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px; font-family: ui-monospace, monospace; }
         input, select {
-            width: 100%; background: var(--bg-input); border: 1px solid var(--border);
-            color: var(--text-main); padding: 11px 12px; border-radius: 8px;
+            width: 100%; background: var(--bg-input) !important; border: 1px solid var(--border) !important;
+            color: var(--text-main) !important; padding: 11px 12px; border-radius: 8px;
             font-size: 16px; outline: none;
         }
-        input:focus, select:focus { border-color: var(--gold); }
+        input:focus, select:focus { border-color: var(--gold) !important; }
         .form-group { margin-bottom: 12px; }
         .form-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
 
@@ -208,13 +208,13 @@
                 </div>
             </div>
             <div class="water-strip">
-                <span id="waterText">Вода: <strong id="waterNorm" style="color: var(--gold);">2.5</strong> л</span>
-                <span id="electText">Электролиты: <strong>1 Karikku</strong></span>
+                <span><span data-i18n="waterLabel">Вода</span>: <strong id="waterNorm" style="color: var(--gold);">2.5</strong> L</span>
+                <span><span data-i18n="electLabel">Электролиты</span>: <strong>1 Karikku</strong></span>
             </div>
         </div>
 
         <div class="presets-scroll">
-            <button type="button" class="chip-btn chip-oil" onclick="addQuickOil()">+10г Oil (Café)</button>
+            <button type="button" class="chip-btn chip-oil" onclick="addQuickOil()">+10g Oil (Café)</button>
             <button type="button" class="chip-btn" onclick="addPreset('clean_bf')">3 Eggs + Oats + Banana</button>
             <button type="button" class="chip-btn" onclick="addPreset('kerala_bf')">3 Appam + Egg Roast</button>
             <button type="button" class="chip-btn" onclick="addPreset('fish_meals')">Matta Rice + Fish + Dal</button>
@@ -250,7 +250,7 @@
 
             <div class="form-row" style="align-items: end; margin-top: 10px; margin-bottom: 4px;">
                 <div class="form-group" style="margin-bottom: 0;">
-                    <label id="weightLabel">Вес (г) // 1 шт (50г)</label>
+                    <label id="weightLabel" data-i18n="weightLabelText">Вес (г)</label>
                     <input type="number" id="foodWeight" value="50" inputmode="numeric">
                 </div>
                 <button type="button" class="btn-primary" onclick="addSelectedFood()" data-i18n="addBtn">+ Add</button>
@@ -267,7 +267,7 @@
         <div class="card">
             <div class="card-header">
                 <span data-i18n="todayLog">Съедено за сегодня</span>
-                <span id="itemsCount" style="color: var(--text-muted);">0 поз.</span>
+                <span id="itemsCount" style="color: var(--text-muted);">0 items</span>
             </div>
             <div id="logContainer"></div>
         </div>
@@ -280,19 +280,19 @@
             <div class="passport-name" id="pName">Dmitrii & Viji</div>
             <div class="passport-row"><span data-i18n="pGoalLabel">Goal / Цель:</span> <strong id="pGoalText" style="color: var(--gold);">Рекомпозиция (-10%)</strong></div>
             <div class="passport-row"><span data-i18n="pActLabel">Activity / Образ жизни:</span> <strong id="pActText">Сидячая / Ноутбук</strong></div>
-            <div class="passport-row"><span data-i18n="pKcalLabel">Daily Target / Калории:</span> <strong id="pTargKcal" style="color: var(--cyan);">1758 ккал</strong></div>
-            <div class="passport-row"><span data-i18n="pProtLabel">Protein Target / Белок:</span> <strong id="pTargProt">122 г (1.8 г/кг)</strong></div>
-            <div class="passport-row"><span data-i18n="pWaterLabel">Water / Норма воды:</span> <strong id="pTargWater">2.5 л + 1 Karikku</strong></div>
+            <div class="passport-row"><span data-i18n="pKcalLabel">Daily Target / Калории:</span> <strong id="pTargKcal" style="color: var(--cyan);">1758 kcal</strong></div>
+            <div class="passport-row"><span data-i18n="pProtLabel">Protein Target / Белок:</span> <strong id="pTargProt">122 g (1.8 g/kg)</strong></div>
+            <div class="passport-row"><span data-i18n="pWaterLabel">Water / Норма воды:</span> <strong id="pTargWater">2.5 L + 1 Karikku</strong></div>
             <div style="margin-top: 14px; font-size: 0.7rem; color: var(--text-muted); text-align: center; font-family: ui-monospace, monospace;">
                 TROPICAL NOMAD PROTOCOL // KERALA, INDIA
             </div>
         </div>
         <div class="card">
             <div class="card-header"><span data-i18n="suppTitle">Рекомендации по спортпиту</span></div>
-            <div id="suppText" style="font-size: 0.8rem; color: var(--sand); line-height: 1.5; font-family: ui-monospace, monospace;">
-                • <strong>Whey Protein:</strong> 1-2 скупа в дни съемок или тренировок для закрытия дефицита белка.<br><br>
-                • <strong>Creatine Monohydrate:</strong> 5г ежедневно для силы и гидратации мышц на тропической жаре.<br><br>
-                • <strong>Electrolytes / Karikku:</strong> Обязательный питьевой кокос или соль с водой утром после поездки на байке.
+            <div id="suppText" style="font-size: 0.8rem; color: var(--sand); line-height: 1.5; font-family: ui-monospace, monospace;" data-i18n="suppContent">
+                • Whey Protein: 1-2 scoops on shoot or training days to hit protein goals.<br><br>
+                • Creatine Monohydrate: 5g daily for strength and tropical hydration.<br><br>
+                • Electrolytes / Karikku: Essential fresh coconut water after riding.
             </div>
         </div>
     </div>
@@ -447,10 +447,12 @@
     const dict = {
         ru: {
             resetBtn: "Сброс", kcalLabel: "ККАЛ", protLabel: "БЕЛКИ (Г)", fatLabel: "ЖИРЫ (Г)", carbLabel: "УГЛЕВОДЫ (Г)",
+            waterLabel: "Вода", electLabel: "Электролиты",
             databaseTitle: "База блюд", searchPlaceholder: "Поиск: appam, tuna, shawarma...",
             catAll: "Все", catKerala: "Керала База", catSea: "Рыба / Море", catMeat: "Мясо / Курица",
             catProt: "Яйца / Бобы", catCarb: "Крупы", catFruit: "Фрукты / Жиры", catSnack: "Напитки",
             aiBtn: "✨ Спросить ИИ (распознать блюдо)", addBtn: "+ Add", todayLog: "Съедено за сегодня",
+            weightLabelText: "Вес (г)",
             customTitle: "Добавить свой продукт", customName: "Название продукта", customKcal: "Ккал на 100г",
             customPortion: "Станд. порция (г)", customProt: "Белки", customFat: "Жиры", customCarb: "Угли",
             saveCustomBtn: "Сохранить в базу", profileTitle: "Параметры тела и образ жизни",
@@ -459,6 +461,7 @@
             navTracker: "Дневник", navPassport: "Паспорт", navCustom: "+ Своя еда", navProfile: "Профиль",
             pGoalLabel: "Goal / Цель:", pActLabel: "Activity / Образ жизни:", pKcalLabel: "Daily Target / Калории:",
             pProtLabel: "Protein Target / Белок:", pWaterLabel: "Water / Норма воды:", suppTitle: "Рекомендации по спортпиту",
+            suppContent: "• Whey Protein: 1-2 скупа в дни съемок или тренировок.<br><br>• Creatine Monohydrate: 5г ежедневно для силы и гидратации.<br><br>• Electrolytes / Karikku: Обязательный питьевой кокос или вода с солью.",
             act1: "Сидячая работа / монтаж за ноутбуком (1.2)", act2: "Съемочные дни / байк / 1-3 тренировки (1.375)",
             act3: "Высокая: серфинг / зал 3-5 раз (1.55)", act4: "Экстремальная физическая нагрузка (1.725)",
             goal1: "Сушка / Жиросжигание (-18%)", goal2: "Рекомпозиция / Мягкий дефицит (-10%)",
@@ -467,10 +470,12 @@
         },
         en: {
             resetBtn: "Reset", kcalLabel: "KCAL", protLabel: "PROTEIN (G)", fatLabel: "FAT (G)", carbLabel: "CARBS (G)",
+            waterLabel: "Water", electLabel: "Electrolytes",
             databaseTitle: "Food Database", searchPlaceholder: "Search: appam, tuna, shawarma...",
             catAll: "All", catKerala: "Kerala Base", catSea: "Fish / Sea", catMeat: "Meat / Chicken",
             catProt: "Eggs / Dal", catCarb: "Grains", catFruit: "Fruits / Fats", catSnack: "Drinks",
             aiBtn: "✨ Ask AI (Recognize Dish)", addBtn: "+ Add", todayLog: "Today's Log",
+            weightLabelText: "Weight (g)",
             customTitle: "Add Custom Food", customName: "Food Name", customKcal: "Kcal per 100g",
             customPortion: "Standard portion (g)", customProt: "Protein", customFat: "Fat", customCarb: "Carbs",
             saveCustomBtn: "Save to Database", profileTitle: "Body Specs & Lifestyle",
@@ -479,6 +484,7 @@
             navTracker: "Diary", navPassport: "Passport", navCustom: "+ Custom", navProfile: "Profile",
             pGoalLabel: "Goal:", pActLabel: "Activity:", pKcalLabel: "Daily Target:",
             pProtLabel: "Protein Target:", pWaterLabel: "Water Intake:", suppTitle: "Supplement Recommendations",
+            suppContent: "• Whey Protein: 1-2 scoops on shoot or training days.<br><br>• Creatine Monohydrate: 5g daily for strength and hydration.<br><br>• Electrolytes / Karikku: Essential fresh coconut water after riding.",
             act1: "Sedentary / Laptop work (1.2)", act2: "Shoots / Bike / 1-3 workouts (1.375)",
             act3: "High: Surfing / Gym 3-5 times (1.55)", act4: "Extreme physical workload (1.725)",
             goal1: "Cut / Fat loss (-18%)", goal2: "Recomp / Mild deficit (-10%)",
@@ -487,10 +493,12 @@
         },
         ml: {
             resetBtn: "റീസെറ്റ്", kcalLabel: "കലോറി", protLabel: "പ്രോട്ടീൻ", fatLabel: "കൊഴുപ്പ്", carbLabel: "കാർബ്സ്",
+            waterLabel: "വെള്ളം", electLabel: "ഇലക്ട്രോലൈറ്റുകൾ",
             databaseTitle: "ഭക്ഷണ പട്ടിക", searchPlaceholder: "തിരയുക...",
             catAll: "എല്ലാം", catKerala: "കേരളം", catSea: "മീൻ", catMeat: "ഇറച്ചി",
             catProt: "മുട്ട/പരിപ്പ്", catCarb: "ധാന്യങ്ങൾ", catFruit: "പഴങ്ങൾ", catSnack: "പാനീയങ്ങൾ",
             aiBtn: "✨ AI സഹായം തേടുക", addBtn: "+ ചേർക്കുക", todayLog: "ഇന്നത്തെ ഭക്ഷണം",
+            weightLabelText: "ഭാരം (ഗ്രാം)",
             customTitle: "പുതിയ ഭക്ഷണം ചേർക്കുക", customName: "ഭക്ഷണത്തിന്റെ പേര്", customKcal: "100 ഗ്രാമിന് കലോറി",
             customPortion: "അളവ് (ഗ്രാം)", customProt: "പ്രോട്ടീൻ", customFat: "കൊഴുപ്പ്", customCarb: "കാർബ്സ്",
             saveCustomBtn: "സേവ് ചെയ്യുക", profileTitle: "ശരീര വിവരങ്ങൾ",
@@ -499,7 +507,8 @@
             navTracker: "ഡയറി", navPassport: "പാസ്‌പോർട്ട്", navCustom: "+ പുതിയത്", navProfile: "പ്രൊഫൈൽ",
             pGoalLabel: "ലക്ഷ്യം:", pActLabel: "പ്രവർത്തനം:", pKcalLabel: "ദിവസേനയുള്ള കലോറി:",
             pProtLabel: "പ്രോട്ടീൻ:", pWaterLabel: "വെള്ളം:", suppTitle: "സപ്ലിമെന്റ് നിർദ്ദേശങ്ങൾ",
-            act1: "രക്തസമ്മർദ്ദം കുറവ് / ഇരുന്നുള്ള ജോലി", act2: "ഷൂട്ടിംഗ് / ബൈക്ക് / വർക്ക്ഔട്ട്",
+            suppContent: "• Whey Protein: പ്രോട്ടീൻ തികയ്ക്കാൻ 1-2 സ്ക്കൂപ്പ്.<br><br>• Creatine: 5g ദിവസവും.<br><br>• Karikku: യാത്രകൾക്ക് ശേഷം നിർബന്ധമായും കുടിക്കുക.",
+            act1: "ഇരുന്നുള്ള ജോലി", act2: "ഷൂട്ടിംഗ് / ബൈക്ക് / വർക്ക്ഔട്ട്",
             act3: "ഉയർന്ന പ്രവർത്തനം / ജിം", act4: "കഠിനമായ ജോലി",
             goal1: "കട്ട് (-18%)", goal2: "റീകോംപ് (-10%)", goal3: "മെയിന്റൈൻ (0%)", goal4: "ബൾക്ക് (+12%)",
             p1: "1.6 g/kg", p2: "1.8 g/kg", p3: "2.1 g/kg"
@@ -526,6 +535,7 @@
             if (dict[lang] && dict[lang][key]) el.setAttribute('placeholder', dict[lang][key]);
         });
         renderPassport();
+        populateFoodSelect();
     }
 
     function switchTab(tabId, btnEl) {
@@ -574,8 +584,9 @@
         const item = foodsDB.find(f => f.id === id);
         if (!item) return;
         document.getElementById('foodWeight').value = item.unitW;
-        document.getElementById('weightLabel').textContent = `Вес (г) // ${item.unitName}`;
-        document.getElementById('foodMacroHint').textContent = `${item.kcal} ккал | Б:${item.p} Ж:${item.f} У:${item.c}`;
+        const wLbl = currentLang === 'ru' ? 'Вес (г)' : (currentLang === 'en' ? 'Weight (g)' : 'ഭാരം (ഗ്രാം)');
+        document.getElementById('weightLabel').textContent = `${wLbl} // ${item.unitName}`;
+        document.getElementById('foodMacroHint').textContent = `${item.kcal} kcal | P:${item.p} F:${item.f} C:${item.c}`;
         document.getElementById('unitBtn1').textContent = `1x (${item.unitW}g)`;
         document.getElementById('unitBtn2').textContent = `2x (${item.unitW * 2}g)`;
     }
@@ -597,14 +608,14 @@
             goal: parseFloat(document.getElementById('goal').value) || -0.10,
             protRatio: parseFloat(document.getElementById('protRatio').value) || 1.8
         };
-        safeSet('vd_profile_v7', profile);
+        safeSet('vd_profile_v8', profile);
         calculateTargets();
         renderPassport();
         renderLog();
     }
 
     function calculateTargets() {
-        const profile = safeGet('vd_profile_v7', { age: 34, height: 178, weight: 68, activity: 1.375, goal: -0.10, protRatio: 1.8 });
+        const profile = safeGet('vd_profile_v8', { age: 34, height: 178, weight: 68, activity: 1.375, goal: -0.10, protRatio: 1.8 });
         const bmr = (10 * profile.weight) + (6.25 * profile.height) - (5 * profile.age) + 5;
         const targetKcal = Math.round(bmr * profile.activity * (1 + profile.goal));
         const targetProt = Math.round(profile.weight * profile.protRatio);
@@ -620,7 +631,7 @@
     }
 
     function renderPassport() {
-        const profile = safeGet('vd_profile_v7', { name: 'Dmitrii', goal: -0.10, weight: 68, protRatio: 1.8 });
+        const profile = safeGet('vd_profile_v8', { name: 'Dmitrii', goal: -0.10, weight: 68, protRatio: 1.8 });
         document.getElementById('pName').textContent = profile.name + ' & Viji';
         const goalsMap = {
             ru: { "-0.18": "Сушка (-18%)", "-0.10": "Рекомпозиция (-10%)", "0": "Поддержка (0%)", "0.12": "Набор массы (+12%)" },
@@ -642,7 +653,6 @@
         const query = prompt(currentLang === 'ru' ? "Какое блюдо или продукт вы съели?" : "What food did you eat?");
         if (!query) return;
         
-        // Надежный локальный расчет КБЖУ для произвольного продукта
         const aiFood = {
             id: 'ai_' + Date.now(),
             cat: 'KER_CARB',
@@ -710,9 +720,9 @@
             c: parseFloat(document.getElementById('custCarb').value) || 0,
             unitW: unitW, unitName: 'portion (' + unitW + 'g)'
         };
-        const savedCustom = safeGet('vd_custom_v7', []);
+        const savedCustom = safeGet('vd_custom_v8', []);
         savedCustom.push(newFood);
-        safeSet('vd_custom_v7', savedCustom);
+        safeSet('vd_custom_v8', savedCustom);
         foodsDB.unshift(newFood);
         populateFoodSelect();
         document.getElementById('custName').value = '';
@@ -720,7 +730,7 @@
     }
 
     function saveSetAndRender() {
-        safeSet('vd_log_v7', dailyLog);
+        safeSet('vd_log_v8', dailyLog);
         renderLog();
     }
 
@@ -771,10 +781,10 @@
     }
 
     function init() {
-        const savedCustom = safeGet('vd_custom_v7', []);
+        const savedCustom = safeGet('vd_custom_v8', []);
         foodsDB = savedCustom.concat(RAW_DB.map(r => ({ id: r[0], cat: r[1], name: r[2], kcal: r[3], p: r[4], f: r[5], c: r[6], unitW: r[7], unitName: r[8] })));
         
-        const savedProfile = safeGet('vd_profile_v7', null);
+        const savedProfile = safeGet('vd_profile_v8', null);
         if (savedProfile) {
             document.getElementById('userName').value = savedProfile.name || 'Dmitrii';
             document.getElementById('age').value = savedProfile.age;
@@ -784,7 +794,7 @@
             document.getElementById('goal').value = savedProfile.goal;
             document.getElementById('protRatio').value = savedProfile.protRatio;
         }
-        dailyLog = safeGet('vd_log_v7', []);
+        dailyLog = safeGet('vd_log_v8', []);
         setLang('ru');
         populateFoodSelect();
         calculateTargets();
