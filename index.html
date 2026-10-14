@@ -23,7 +23,7 @@
             width: 100%; max-width: 100vw; overflow-x: hidden;
             background-color: var(--bg-main) !important; color: var(--text-main) !important;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-            line-height: 1.4; padding-bottom: 90px;
+            line-height: 1.5; padding-bottom: 90px;
         }
         .app-container { width: 100%; max-width: 520px; margin: 0 auto; padding: 14px; }
         
@@ -35,7 +35,7 @@
         .app-sub { font-family: ui-monospace, monospace; font-size: 0.68rem; color: var(--sand); margin-top: 2px; }
         
         .lang-switch { display: flex; gap: 4px; background: var(--bg-input); padding: 3px; border-radius: 6px; border: 1px solid var(--border); }
-        .lang-btn { background: none; border: none; color: var(--text-muted); font-size: 0.68rem; font-weight: 700; padding: 4px 7px; border-radius: 4px; cursor: pointer; }
+        .lang-btn { background: none; border: none; color: var(--text-muted); font-size: 0.68rem; font-weight: 700; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
         .lang-btn.active { background: var(--gold); color: #000; }
 
         .tab-view { display: none; }
@@ -139,6 +139,19 @@
         .passport-title { font-size: 0.75rem; color: var(--gold); font-family: ui-monospace, monospace; text-transform: uppercase; letter-spacing: 1px; }
         .passport-name { font-size: 1.25rem; font-weight: 800; margin: 6px 0 12px 0; color: #fff; }
         .passport-row { display: flex; justify-content: space-between; font-size: 0.82rem; padding: 6px 0; border-bottom: 1px solid var(--border); font-family: ui-monospace, monospace; }
+
+        /* Аккуратные карточки спортпита без HTML-мусора */
+        .supp-box {
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            font-size: 0.78rem;
+            font-family: ui-monospace, monospace;
+            color: var(--sand);
+        }
+        .supp-box strong { color: var(--gold); display: block; margin-bottom: 2px; }
 
         .log-item {
             display: flex; justify-content: space-between; align-items: center;
@@ -289,10 +302,8 @@
         </div>
         <div class="card">
             <div class="card-header"><span data-i18n="suppTitle">Рекомендации по спортпиту</span></div>
-            <div id="suppText" style="font-size: 0.8rem; color: var(--sand); line-height: 1.5; font-family: ui-monospace, monospace;" data-i18n="suppContent">
-                • Whey Protein: 1-2 scoops on shoot or training days to hit protein goals.<br><br>
-                • Creatine Monohydrate: 5g daily for strength and tropical hydration.<br><br>
-                • Electrolytes / Karikku: Essential fresh coconut water after riding.
+            <div id="suppContainer">
+                <!-- Динамически заполняемые чистые карточки спортпита -->
             </div>
         </div>
     </div>
@@ -462,7 +473,11 @@
             navTracker: "Дневник", navPassport: "Паспорт", navCustom: "+ Своя еда", navProfile: "Профиль",
             pGoalLabel: "Goal / Цель:", pActLabel: "Activity / Образ жизни:", pKcalLabel: "Daily Target / Калории:",
             pProtLabel: "Protein Target / Белок:", pWaterLabel: "Water / Норма воды:", suppTitle: "Рекомендации по спортпиту",
-            suppContent: "• Whey Protein: 1-2 скупа в дни съемок или тренировок.<br><br>• Creatine Monohydrate: 5г ежедневно для силы и гидратации.<br><br>• Electrolytes / Karikku: Обязательный питьевой кокос или вода с солью.",
+            suppData: [
+                { title: "Whey Protein", desc: "1-2 скупа в дни съемок или тренировок для закрытия дефицита белка." },
+                { title: "Creatine Monohydrate", desc: "5г ежедневно для силы и гидратации мышц на тропической жаре." },
+                { title: "Electrolytes / Karikku", desc: "Обязательный питьевой кокос или соль с водой утром после поездки на байке." }
+            ],
             act1: "Сидячая работа / монтаж за ноутбуком (1.2)", act2: "Съемочные дни / байк / 1-3 тренировки (1.375)",
             act3: "Высокая: серфинг / зал 3-5 раз (1.55)", act4: "Экстремальная физическая нагрузка (1.725)",
             goal1: "Сушка / Жиросжигание (-18%)", goal2: "Рекомпозиция / Мягкий дефицит (-10%)",
@@ -486,7 +501,11 @@
             navTracker: "Diary", navPassport: "Passport", navCustom: "+ Custom", navProfile: "Profile",
             pGoalLabel: "Goal:", pActLabel: "Activity:", pKcalLabel: "Daily Target:",
             pProtLabel: "Protein Target:", pWaterLabel: "Water Intake:", suppTitle: "Supplement Recommendations",
-            suppContent: "• Whey Protein: 1-2 scoops on shoot or training days.<br><br>• Creatine Monohydrate: 5g daily for strength and hydration.<br><br>• Electrolytes / Karikku: Essential fresh coconut water after riding.",
+            suppData: [
+                { title: "Whey Protein", desc: "1-2 scoops on shoot or training days to hit protein goals." },
+                { title: "Creatine Monohydrate", desc: "5g daily for strength and tropical hydration." },
+                { title: "Electrolytes / Karikku", desc: "Essential fresh coconut water after riding." }
+            ],
             act1: "Sedentary / Laptop work (1.2)", act2: "Shoots / Bike / 1-3 workouts (1.375)",
             act3: "High: Surfing / Gym 3-5 times (1.55)", act4: "Extreme physical workload (1.725)",
             goal1: "Cut / Fat loss (-18%)", goal2: "Recomp / Mild deficit (-10%)",
@@ -510,7 +529,11 @@
             navTracker: "ഡയറി", navPassport: "പാസ്‌പോർട്ട്", navCustom: "+ പുതിയത്", navProfile: "പ്രൊഫൈൽ",
             pGoalLabel: "ലക്ഷ്യം:", pActLabel: "പ്രവർത്തനം:", pKcalLabel: "ദിവസേനയുള്ള കലോറി:",
             pProtLabel: "പ്രോട്ടീൻ:", pWaterLabel: "വെള്ളം:", suppTitle: "സപ്ലിമെന്റ് നിർദ്ദേശങ്ങൾ",
-            suppContent: "• Whey Protein: പ്രോട്ടീൻ തികയ്ക്കാൻ 1-2 സ്ക്കൂപ്പ്.<br><br>• Creatine: 5g ദിവസവും.<br><br>• Karikku: യാത്രകൾക്ക് ശേഷം നിർബന്ധമായും കുടിക്കുക.",
+            suppData: [
+                { title: "Whey Protein", desc: "പ്രോട്ടീൻ തികയ്ക്കാൻ 1-2 സ്ക്കൂപ്പ്." },
+                { title: "Creatine", desc: "ശക്തിക്കും ജലാംശത്തിനുമായി 5g ദിവസവും." },
+                { title: "Karikku", desc: "യാത്രകൾക്ക് ശേഷം നിർബന്ധമായും കുടിക്കുക." }
+            ],
             act1: "ഇരുന്നുള്ള ജോലി", act2: "ഷൂട്ടിംഗ് / ബൈക്ക് / വർക്ക്ഔട്ട്",
             act3: "ഉയർന്ന പ്രവർത്തനം / ജിം", act4: "കഠിനമായ ജോലി",
             goal1: "കട്ട് (-18%)", goal2: "റീകോംപ് (-10%)", goal3: "മെയിന്റൈൻ (0%)", goal4: "ബൾക്ക് (+12%)",
@@ -537,8 +560,21 @@
             const key = el.getAttribute('data-i18n-placeholder');
             if (dict[lang] && dict[lang][key]) el.setAttribute('placeholder', dict[lang][key]);
         });
+
+        renderSupplements();
         renderPassport();
         populateFoodSelect();
+    }
+
+    function renderSupplements() {
+        const container = document.getElementById('suppContainer');
+        const data = dict[currentLang].suppData;
+        container.innerHTML = data.map(item => `
+            <div class="supp-box">
+                <strong>${item.title}</strong>
+                <span>${item.desc}</span>
+            </div>
+        `).join('');
     }
 
     function switchTab(tabId, btnEl) {
@@ -611,14 +647,14 @@
             goal: parseFloat(document.getElementById('goal').value) || -0.10,
             protRatio: parseFloat(document.getElementById('protRatio').value) || 1.8
         };
-        safeSet('vd_profile_v9', profile);
+        safeSet('vd_profile_v10', profile);
         calculateTargets();
         renderPassport();
         renderLog();
     }
 
     function calculateTargets() {
-        const profile = safeGet('vd_profile_v9', { age: 34, height: 178, weight: 68, activity: 1.375, goal: -0.10, protRatio: 1.8 });
+        const profile = safeGet('vd_profile_v10', { age: 34, height: 178, weight: 68, activity: 1.375, goal: -0.10, protRatio: 1.8 });
         const bmr = (10 * profile.weight) + (6.25 * profile.height) - (5 * profile.age) + 5;
         const targetKcal = Math.round(bmr * profile.activity * (1 + profile.goal));
         const targetProt = Math.round(profile.weight * profile.protRatio);
@@ -634,7 +670,7 @@
     }
 
     function renderPassport() {
-        const profile = safeGet('vd_profile_v9', { name: 'Dmitrii', goal: -0.10, weight: 68, protRatio: 1.8 });
+        const profile = safeGet('vd_profile_v10', { name: 'Dmitrii', goal: -0.10, weight: 68, protRatio: 1.8 });
         document.getElementById('pName').textContent = profile.name + ' & Viji';
         const goalsMap = {
             ru: { "-0.18": "Сушка (-18%)", "-0.10": "Рекомпозиция (-10%)", "0": "Поддержка (0%)", "0.12": "Набор массы (+12%)" },
@@ -723,9 +759,9 @@
             c: parseFloat(document.getElementById('custCarb').value) || 0,
             unitW: unitW, unitName: 'portion (' + unitW + 'g)'
         };
-        const savedCustom = safeGet('vd_custom_v9', []);
+        const savedCustom = safeGet('vd_custom_v10', []);
         savedCustom.push(newFood);
-        safeSet('vd_custom_v9', savedCustom);
+        safeSet('vd_custom_v10', savedCustom);
         foodsDB.unshift(newFood);
         populateFoodSelect();
         document.getElementById('custName').value = '';
@@ -733,7 +769,7 @@
     }
 
     function saveSetAndRender() {
-        safeSet('vd_log_v9', dailyLog);
+        safeSet('vd_log_v10', dailyLog);
         renderLog();
     }
 
@@ -784,10 +820,10 @@
     }
 
     function init() {
-        const savedCustom = safeGet('vd_custom_v9', []);
+        const savedCustom = safeGet('vd_custom_v10', []);
         foodsDB = savedCustom.concat(RAW_DB.map(r => ({ id: r[0], cat: r[1], name: r[2], kcal: r[3], p: r[4], f: r[5], c: r[6], unitW: r[7], unitName: r[8] })));
         
-        const savedProfile = safeGet('vd_profile_v9', null);
+        const savedProfile = safeGet('vd_profile_v10', null);
         if (savedProfile) {
             document.getElementById('userName').value = savedProfile.name || 'Dmitrii';
             document.getElementById('age').value = savedProfile.age;
@@ -797,10 +833,11 @@
             document.getElementById('goal').value = savedProfile.goal;
             document.getElementById('protRatio').value = savedProfile.protRatio;
         }
-        dailyLog = safeGet('vd_log_v9', []);
+        dailyLog = safeGet('vd_log_v10', []);
         setLang('ru');
         populateFoodSelect();
         calculateTargets();
+        renderSupplements();
         renderPassport();
         renderLog();
     }
