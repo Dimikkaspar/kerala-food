@@ -181,9 +181,9 @@
         </div>
         <div style="display: flex; gap: 8px; align-items: center;">
             <div class="lang-switch">
-                <button type="button" class="lang-btn active" onclick="setLang('ru')">RU</button>
-                <button type="button" class="lang-btn" onclick="setLang('en')">EN</button>
-                <button type="button" class="lang-btn" onclick="setLang('ml')">ML</button>
+                <button type="button" class="lang-btn active" id="btnRu" onclick="setLang('ru')">RU</button>
+                <button type="button" class="lang-btn" id="btnEn" onclick="setLang('en')">EN</button>
+                <button type="button" class="lang-btn" id="btnMl" onclick="setLang('ml')">ML</button>
             </div>
             <button type="button" class="btn-reset" onclick="clearLog()" data-i18n="resetBtn">Сброс</button>
         </div>
@@ -541,7 +541,9 @@
     function setLang(lang) {
         currentLang = lang;
         document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-        if (event && event.currentTarget) event.currentTarget.classList.add('active');
+        if (lang === 'ru') document.getElementById('btnRu').classList.add('active');
+        if (lang === 'en') document.getElementById('btnEn').classList.add('active');
+        if (lang === 'ml') document.getElementById('btnMl').classList.add('active');
         
         document.querySelectorAll('[data-i18n]').forEach(el => {
             const key = el.getAttribute('data-i18n');
@@ -595,7 +597,8 @@
             const matchQ = !q || f.name.toLowerCase().indexOf(q) !== -1;
             return matchCat && matchQ;
         });
-        document.getElementById('foundCount').textContent = list.length;
+        const foundEl = document.getElementById('foundCount');
+        if (foundEl) foundEl.textContent = list.length;
         if (list.length === 0) {
             const opt = document.createElement('option');
             opt.value = '';
@@ -645,14 +648,14 @@
             goal: parseFloat(document.getElementById('goal').value) || -0.10,
             protRatio: parseFloat(document.getElementById('protRatio').value) || 1.8
         };
-        safeSet('vd_profile_v12', profile);
+        safeSet('vd_profile_v13', profile);
         calculateTargets();
         renderPassport();
         renderLog();
     }
 
     function calculateTargets() {
-        const profile = safeGet('vd_profile_v12', { age: 34, height: 178, weight: 68, activity: 1.375, goal: -0.10, protRatio: 1.8 });
+        const profile = safeGet('vd_profile_v13', { age: 34, height: 178, weight: 68, activity: 1.375, goal: -0.10, protRatio: 1.8 });
         const bmr = (10 * profile.weight) + (6.25 * profile.height) - (5 * profile.age) + 5;
         const targetKcal = Math.round(bmr * profile.activity * (1 + profile.goal));
         const targetProt = Math.round(profile.weight * profile.protRatio);
@@ -668,7 +671,7 @@
     }
 
     function renderPassport() {
-        const profile = safeGet('vd_profile_v12', { name: 'Dmitrii', goal: -0.10, weight: 68, protRatio: 1.8 });
+        const profile = safeGet('vd_profile_v13', { name: 'Dmitrii', goal: -0.10, weight: 68, protRatio: 1.8 });
         document.getElementById('pName').textContent = profile.name + ' & Viji';
         const goalsMap = {
             ru: { "-0.18": "Сушка (-18%)", "-0.10": "Рекомпозиция (-10%)", "0": "Поддержка (0%)", "0.12": "Набор массы (+12%)" },
@@ -759,9 +762,9 @@
             c: parseFloat(document.getElementById('custCarb').value) || 0,
             unitW: unitW, unitName: 'portion (' + unitW + 'g)'
         };
-        const savedCustom = safeGet('vd_custom_v12', []);
+        const savedCustom = safeGet('vd_custom_v13', []);
         savedCustom.push(newFood);
-        safeSet('vd_custom_v12', savedCustom);
+        safeSet('vd_custom_v13', savedCustom);
         foodsDB.unshift(newFood);
         populateFoodSelect();
         document.getElementById('custName').value = '';
@@ -769,7 +772,7 @@
     }
 
     function saveSetAndRender() {
-        safeSet('vd_log_v12', dailyLog);
+        safeSet('vd_log_v13', dailyLog);
         renderLog();
     }
 
@@ -787,11 +790,12 @@
         document.getElementById('itemsCount').textContent = dailyLog.length + ' items';
 
         updateBar('barKcal', totKcal, targets.kcal, false);
-        updateBar('barProt',totP, targets.p, true);
+        updateBar('barProt', totP, targets.p, true);
         updateBar('barFat', totF, targets.f, false);
         updateBar('barCarb', totC, targets.c, false);
 
         const container = document.getElementById('logContainer');
+        if (!container) return;
         if (dailyLog.length === 0) {
             container.innerHTML = '<div style="text-align:center; padding: 14px 0; color: var(--text-muted); font-size: 0.8rem;">Дневник пуст / Diary is empty</div>';
             return;
@@ -821,10 +825,10 @@
     }
 
     function init() {
-        const savedCustom = safeGet('vd_custom_v12', []);
+        const savedCustom = safeGet('vd_custom_v13', []);
         foodsDB = savedCustom.concat(RAW_DB.map(r => ({ id: r[0], cat: r[1], name: r[2], kcal: r[3], p: r[4], f: r[5], c: r[6], unitW: r[7], unitName: r[8] })));
         
-        const savedProfile = safeGet('vd_profile_v12', null);
+        const savedProfile = safeGet('vd_profile_v13', null);
         if (savedProfile) {
             document.getElementById('userName').value = savedProfile.name || 'Dmitrii';
             document.getElementById('age').value = savedProfile.age;
@@ -834,7 +838,7 @@
             document.getElementById('goal').value = savedProfile.goal;
             document.getElementById('protRatio').value = savedProfile.protRatio;
         }
-        dailyLog = safeGet('vd_log_v12', []);
+        dailyLog = safeGet('vd_log_v13', []);
         setLang('ru');
         populateFoodSelect();
         calculateTargets();
@@ -843,7 +847,10 @@
         renderLog();
     }
 
-    init();
+    document.addEventListener("DOMContentLoaded", init);
+    if (document.readyState === "complete" || document.readyState === "interactive") {
+        setTimeout(init, 50);
+    }
 </script>
 </body>
 </html>
