@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>V&D • KERALA MACRO ENGINE</title>
+    <style>
+        :root {
+            --bg-main: #0c0e12;
+            --bg-card: #141720;
+            --bg-input: #1a1e2b;
+            --gold: #D4AF37;
+            --gold-dim: rgba(212, 175, 55, 0.15);
+            --sand: #c2b280;
+            --cyan: #00f0ff;
+            --magenta: #ff2a6d;
+            --text-main: #f2f4f8;
+            --text-muted: #8a93a6;
+            --border: #262c3d;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+        html, body {
+            width: 100%; max-width: 100vw; overflow-x: hidden;
+            background-color: var(--bg-main) !important; color: var(--text-main) !important;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            line-height: 1.4; padding-bottom: 90px;
+        }
+        .app-container { width: 100%; max-width: 520px; margin: 0 auto; padding: 14px; }
+        
+        .app-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 12px; margin-bottom: 14px; border-bottom: 1px solid var(--border);
+        }
+        .app-title { font-weight: 800; font-size: 1.1rem; color: var(--gold); letter-spacing: 1px; }
+        .app-sub { font-family: ui-monospace, monospace; font-size: 0.68rem; color: var(--sand); margin-top: 2px; }
+        
+        .lang-switch { display: flex; gap: 4px; background: var(--bg-input); padding: 3px; border-radius: 6px; border: 1px solid var(--border); }
+        .lang-btn { background: none; border: none; color: var(--text-muted); font-size: 0.68rem; font-weight: 700; padding: 4px 7px; border-radius: 4px; cursor: pointer; }
+        .lang-btn.active { background: var(--gold); color: #000; }
+
+        .tab-view { display: none; }
+        .tab-view.active { display: block; }
+
+        .card {
+            background: var(--bg-card); border: 1px solid var(--border);
+            border-radius: 12px; padding: 16px; margin-bottom: 14px; width: 100%;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+        }
+        .card-header {
+            font-family: ui-monospace, monospace; font-size: 0.72rem;
+            text-transform: uppercase; color: var(--gold); margin-bottom: 12px;
+            display: flex; justify-content: space-between; align-items: center;
+            letter-spacing: 0.5px;
+        }
+
+        .macro-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 10px; }
+        .macro-box { background: var(--bg-input); border: 1px solid var(--border); padding: 12px; border-radius: 8px; min-width: 0; }
+        .macro-label { font-family: ui-monospace, monospace; font-size: 0.65rem; color: var(--text-muted); }
+        .macro-val { font-family: ui-monospace, monospace; font-size: 1.15rem; font-weight: 700; margin: 4px 0 6px 0; color: #fff; }
+        .macro-target { font-size: 0.75rem; color: var(--text-muted); font-weight: 400; }
+        
+        .progress-track { height: 6px; background: #0c0e12; border-radius: 3px; overflow: hidden; }
+        .progress-fill { height: 100%; width: 0%; transition: width 0.25s ease; }
+        .fill-kcal { background: var(--gold); }
+        .fill-prot { background: var(--cyan); }
+        .fill-fat { background: var(--sand); }
+        .fill-carb { background: #6e7a94; }
+        .fill-over { background: var(--magenta) !important; }
+
+        .water-strip {
+            background: var(--gold-dim); border: 1px solid rgba(212, 175, 55, 0.3);
+            padding: 10px 12px; border-radius: 8px; font-family: ui-monospace, monospace;
+            font-size: 0.74rem; display: flex; justify-content: space-between; color: var(--text-main);
+        }
+
+        .presets-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 8px; scrollbar-width: none; }
+        .presets-scroll::-webkit-scrollbar { display: none; }
+        .chip-btn {
+            flex: 0 0 auto; background: var(--bg-input); border: 1px solid var(--border);
+            color: var(--text-main); padding: 9px 12px; border-radius: 8px;
+            font-family: ui-monospace, monospace; font-size: 0.73rem; cursor: pointer;
+        }
+        .chip-btn:active { background: var(--gold-dim); border-color: var(--gold); }
+        .chip-oil { border-color: rgba(255, 42, 109, 0.5); color: #ff85a9; }
+
+        .cat-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 10px; scrollbar-width: none; }
+        .cat-scroll::-webkit-scrollbar { display: none; }
+        .cat-tab {
+            flex: 0 0 auto; background: #10131a; border: 1px solid var(--border);
+            color: var(--text-muted); padding: 7px 11px; border-radius: 6px;
+            font-size: 0.7rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+        }
+        .cat-tab.active { border-color: var(--gold); color: var(--gold); background: var(--gold-dim); }
+
+        label { display: block; font-size: 0.7rem; color: var(--text-muted); margin-bottom: 4px; font-family: ui-monospace, monospace; }
+        input, select {
+            width: 100%; background: var(--bg-input) !important; border: 1px solid var(--border) !important;
+            color: var(--text-main) !important; padding: 11px 12px; border-radius: 8px;
+            font-size: 16px; outline: none;
+        }
+        input:focus, select:focus { border-color: var(--gold) !important; }
+        .form-group { margin-bottom: 12px; }
+        .form-row { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 12px; }
+
+        .weight-pills { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 10px; }
+        .pill-btn {
+            background: #10131a; border: 1px solid var(--border); color: var(--text-main);
+            padding: 9px 4px; border-radius: 6px; font-family: ui-monospace, monospace;
+            font-size: 0.72rem; cursor: pointer; text-align: center;
+        }
+        .pill-btn.unit { border-color: rgba(0, 240, 255, 0.35); color: var(--cyan); }
+
+        .btn-primary {
+            width: 100%; background: var(--gold); color: #000; border: none;
+            padding: 13px; border-radius: 8px; font-size: 0.85rem; font-weight: 800;
+            text-transform: uppercase; cursor: pointer; letter-spacing: 0.5px;
+        }
+        .btn-primary:active { opacity: 0.8; }
+        
+        .ai-btn {
+            background: linear-gradient(135deg, rgba(0,240,255,0.15), rgba(212,175,55,0.15));
+            border: 1px solid var(--cyan); color: var(--cyan);
+            padding: 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700;
+            width: 100%; margin-top: 8px; cursor: pointer; text-transform: uppercase;
+        }
+
+        .btn-reset {
+            background: #1d141b; border: 1px solid var(--magenta); color: var(--magenta);
+            padding: 7px 12px; border-radius: 6px; font-size: 0.7rem; font-weight: 700;
+            text-transform: uppercase; cursor: pointer;
+        }
+
+        .passport-card {
+            background: linear-gradient(145deg, #161b26, #10131a);
+            border: 1.5px solid var(--gold);
+            border-radius: 14px; padding: 18px; margin-bottom: 14px;
+            position: relative; overflow: hidden;
+        }
+        .passport-title { font-size: 0.75rem; color: var(--gold); font-family: ui-monospace, monospace; text-transform: uppercase; letter-spacing: 1px; }
+        .passport-name { font-size: 1.25rem; font-weight: 800; margin: 6px 0 12px 0; color: #fff; }
+        .passport-row { display: flex; justify-content: space-between; font-size: 0.82rem; padding: 6px 0; border-bottom: 1px solid var(--border); font-family: ui-monospace, monospace; }
+
+        .log-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid #1f2430; gap: 8px;
+        }
+        .log-item:last-child { border-bottom: none; }
+        .log-title { font-size: 0.85rem; font-weight: 600; color: var(--text-main); }
+        .log-meta { font-family: ui-monospace, monospace; font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
+        .log-right { display: flex; align-items: center; gap: 10px; }
+        .log-kcal { font-family: ui-monospace, monospace; font-size: 0.85rem; font-weight: 700; color: var(--gold); }
+        .del-btn { background: #231922; border: 1px solid var(--magenta); color: var(--magenta); width: 30px; height: 30px; border-radius: 6px; font-weight: 700; cursor: pointer; }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(14, 17, 24, 0.95);
+            backdrop-filter: blur(10px); border-top: 1px solid var(--border); display: grid;
+            grid-template-columns: repeat(4, 1fr); padding-bottom: env(safe-area-inset-bottom, 10px); z-index: 999;
+        }
+        .nav-btn {
+            background: none; border: none; color: var(--text-muted); padding: 12px 2px;
+            font-size: 0.65rem; font-weight: 700; text-transform: uppercase; cursor: pointer;
+            font-family: ui-monospace, monospace;
+        }
+        .nav-btn.active { color: var(--gold); border-top: 2px solid var(--gold); }
+    </style>
+</head>
+<body>
+
+<div class="app-container">
+    <header class="app-header">
+        <div>
+            <div class="app-title">V&D • KERALA MACRO</div>
+            <div class="app-sub" id="hdrSub">Bohocult Sanctuary Hub</div>
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+            <div class="lang-switch">
+                <button type="button" class="lang-btn active" onclick="setLang('ru')">RU</button>
+                <button type="button" class="lang-btn" onclick="setLang('en')">EN</button>
+                <button type="button" class="lang-btn" onclick="setLang('ml')">ML</button>
+            </div>
+            <button type="button" class="btn-reset" onclick="clearLog()" data-i18n="resetBtn">Сброс</button>
+        </div>
+    </header>
+
+    <!-- ВКЛАДКА 1: ДНЕВНИК -->
+    <div id="tab-tracker" class="tab-view active">
+        <div class="card">
+            <div class="macro-grid">
+                <div class="macro-box">
+                    <div class="macro-label" data-i18n="kcalLabel">ККАЛ</div>
+                    <div class="macro-val"><span id="curKcal">0</span> <span class="macro-target">/ <span id="tarKcal">1758</span></span></div>
+                    <div class="progress-track"><div id="barKcal" class="progress-fill fill-kcal"></div></div>
+                </div>
+                <div class="macro-box">
+                    <div class="macro-label" data-i18n="protLabel">БЕЛКИ (Г)</div>
+                    <div class="macro-val"><span id="curProt" style="color: var(--cyan);">0</span> <span class="macro-target">/ <span id="tarProt">122</span></span></div>
+                    <div class="progress-track"><div id="barProt" class="progress-fill fill-prot"></div></div>
+                </div>
+                <div class="macro-box">
+                    <div class="macro-label" data-i18n="fatLabel">ЖИРЫ (Г)</div>
+                    <div class="macro-val"><span id="curFat">0</span> <span class="macro-target">/ <span id="tarFat">68</span></span></div>
+                    <div class="progress-track"><div id="barFat" class="progress-fill fill-fat"></div></div>
+                </div>
+                <div class="macro-box">
+                    <div class="macro-label" data-i18n="carbLabel">УГЛЕВОДЫ (Г)</div>
+                    <div class="macro-val"><span id="curCarb">0</span> <span class="macro-target">/ <span id="tarCarb">165</span></span></div>
+                    <div class="progress-track"><div id="barCarb" class="progress-fill fill-carb"></div></div>
+                </div>
+            </div>
+            <div class="water-strip">
+                <span><span data-i18n="waterLabel">Вода</span>: <strong id="waterNorm" style="color: var(--gold);">2.5</strong> L</span>
+                <span><span data-i18n="electLabel">Электролиты</span>: <strong>1 Karikku</strong></span>
+            </div>
+        </div>
+
+        <div class="presets-scroll">
+            <button type="button" class="chip-btn chip-oil" onclick="addQuickOil()">+10g Oil (Café)</button>
+            <button type="button" class="chip-btn" onclick="addPreset('clean_bf')">3 Eggs + Oats + Banana</button>
+            <button type="button" class="chip-btn" onclick="addPreset('kerala_bf')">3 Appam + Egg Roast</button>
+            <button type="button" class="chip-btn" onclick="addPreset('fish_meals')">Matta Rice + Fish + Dal</button>
+            <button type="button" class="chip-btn" onclick="addPreset('parotta_beef')">2 Parotta + Beef Roast</button>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span data-i18n="databaseTitle">База (<span id="foundCount">115</span> блюд)</span>
+                <span id="foodMacroHint" style="color: var(--sand);">210 ккал / 100г</span>
+            </div>
+
+            <div class="form-group">
+                <input type="text" id="searchInput" data-i18n-placeholder="searchPlaceholder" placeholder="Поиск блюд..." oninput="populateFoodSelect()">
+            </div>
+
+            <div class="cat-scroll">
+                <button type="button" class="cat-tab active" onclick="filterCat('ALL', this)" data-i18n="catAll">Все</button>
+                <button type="button" class="cat-tab" onclick="filterCat('KER_CARB', this)" data-i18n="catKerala">Керала База</button>
+                <button type="button" class="cat-tab" onclick="filterCat('SEA', this)" data-i18n="catSea">Рыба / Море</button>
+                <button type="button" class="cat-tab" onclick="filterCat('MEAT', this)" data-i18n="catMeat">Мясо / Курица</button>
+                <button type="button" class="cat-tab" onclick="filterCat('PROT', this)" data-i18n="catProt">Яйца / Бобы</button>
+                <button type="button" class="cat-tab" onclick="filterCat('BASE_CARB', this)" data-i18n="catCarb">Крупы</button>
+                <button type="button" class="cat-tab" onclick="filterCat('FRUIT', this)" data-i18n="catFruit">Фрукты / Жиры</button>
+                <button type="button" class="cat-tab" onclick="filterCat('SNACK', this)" data-i18n="catSnack">Напитки</button>
+            </div>
+
+            <div class="form-group">
+                <select id="foodSelect" onchange="updateDefaultWeight()"></select>
+            </div>
+
+            <button type="button" class="ai-btn" onclick="askAiPrompt()" data-i18n="aiBtn">✨ Спросить ИИ (распознать блюдо)</button>
+
+            <div class="form-row" style="align-items: end; margin-top: 10px; margin-bottom: 4px;">
+                <div class="form-group" style="margin-bottom: 0;">
+                    <label id="weightLabel" data-i18n="weightLabelText">Вес (г)</label>
+                    <input type="number" id="foodWeight" value="50" inputmode="numeric">
+                </div>
+                <button type="button" class="btn-primary" onclick="addSelectedFood()" data-i18n="addBtn">+ Add</button>
+            </div>
+
+            <div class="weight-pills">
+                <button type="button" class="pill-btn unit" onclick="setUnitPortion(1)" id="unitBtn1">1x</button>
+                <button type="button" class="pill-btn unit" onclick="setUnitPortion(2)" id="unitBtn2">2x</button>
+                <button type="button" class="pill-btn" onclick="setWeight(100)">100g</button>
+                <button type="button" class="pill-btn" onclick="setWeight(200)">200g</button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <span data-i18n="todayLog">Съедено за сегодня</span>
+                <span id="itemsCount" style="color: var(--text-muted);">0 items</span>
+            </div>
+            <div id="logContainer"></div>
+        </div>
+    </div>
+
+    <!-- ВКЛАДКА 2: ПАСПОРТ ПИТАНИЯ -->
+    <div id="tab-passport" class="tab-view">
+        <div class="passport-card">
+            <div class="passport-title">V&D • Certified Nutrition Passport</div>
+            <div class="passport-name" id="pName">Dmitrii & Viji</div>
+            <div class="passport-row"><span data-i18n="pGoalLabel">Goal / Цель:</span> <strong id="pGoalText" style="color: var(--gold);">Рекомпозиция (-10%)</strong></div>
+            <div class="passport-row"><span data-i18n="pActLabel">Activity / Образ жизни:</span> <strong id="pActText">Сидячая / Ноутбук</strong></div>
+            <div class="passport-row"><span data-i18n="pKcalLabel">Daily Target / Калории:</span> <strong id="pTargKcal" style="color: var(--cyan);">1758 kcal</strong></div>
+            <div class="passport-row"><span data-i18n="pProtLabel">Protein Target / Белок:</span> <strong id="pTargProt">122 g (1.8 g/kg)</strong></div>
+            <div class="passport-row"><span data-i18n="pWaterLabel">Water / Норма воды:</span> <strong id="pTargWater">2.5 L + 1 Karikku</strong></div>
+            <div style="margin-top: 14px; font-size: 0.7rem; color: var(--text-muted); text-align: center; font-family: ui-monospace, monospace;">
+                TROPICAL NOMAD PROTOCOL // KERALA, INDIA
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-header"><span data-i18n="suppTitle">Рекомендации по спортпиту</span></div>
+            <div id="suppText" style="font-size: 0.8rem; color: var(--sand); line-height: 1.5; font-family: ui-monospace, monospace;" data-i18n="suppContent">
+                • Whey Protein: 1-2 scoops on shoot or training days to hit protein goals.<br><br>
+                • Creatine Monohydrate: 5g daily for strength and tropical hydration.<br><br>
+                • Electrolytes / Karikku: Essential fresh coconut water after riding.
+            </div>
+        </div>
+    </div>
+
+    <!-- ВКЛАДКА 3: СВОЯ ЕДА -->
+    <div id="tab-custom" class="tab-view">
+        <div class="card">
+            <div class="card-header"><span data-i18n="customTitle">Добавить свой продукт</span></div>
+            <div class="form-group">
+                <label data-i18n="customName">Название продукта</label>
+                <input type="text" id="custName" placeholder="Напр. Паста с тунцом">
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label data-i18n="customKcal">Ккал на 100г</label>
+                    <input type="number" id="custKcal" placeholder="180" inputmode="decimal">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="customPortion">Станд. порция (г)</label>
+                    <input type="number" id="custPortion" value="150" inputmode="numeric">
+                </div>
+            </div>
+            <div class="form-row" style="grid-template-columns: repeat(3, minmax(0, 1fr));">
+                <div class="form-group">
+                    <label data-i18n="customProt">Белки</label>
+                    <input type="number" id="custProt" placeholder="15" step="0.1" inputmode="decimal">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="customFat">Жиры</label>
+                    <input type="number" id="custFat" placeholder="6" step="0.1" inputmode="decimal">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="customCarb">Угли</label>
+                    <input type="number" id="custCarb" placeholder="20" step="0.1" inputmode="decimal">
+                </div>
+            </div>
+            <button type="button" class="btn-primary" onclick="saveCustomFood()" data-i18n="saveCustomBtn">Сохранить в базу</button>
+        </div>
+    </div>
+
+    <!-- ВКЛАДКА 4: ПРОФИЛЬ -->
+    <div id="tab-profile" class="tab-view">
+        <div class="card">
+            <div class="card-header"><span data-i18n="profileTitle">Параметры тела и образ жизни</span></div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label data-i18n="lblName">Имя</label>
+                    <input type="text" id="userName" value="Dmitrii" oninput="saveProfile()">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="lblAge">Возраст</label>
+                    <input type="number" id="age" value="34" inputmode="numeric" oninput="saveProfile()">
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label data-i18n="lblHeight">Рост (см)</label>
+                    <input type="number" id="height" value="178" inputmode="numeric" oninput="saveProfile()">
+                </div>
+                <div class="form-group">
+                    <label data-i18n="lblWeight">Вес (кг)</label>
+                    <input type="number" id="weight" value="68" step="0.5" inputmode="decimal" oninput="saveProfile()">
+                </div>
+            </div>
+            <div class="form-group">
+                <label data-i18n="lblActivity">Образ жизни и активность</label>
+                <select id="activity" onchange="saveProfile()">
+                    <option value="1.2" data-i18n="act1">Сидячая работа / монтаж за ноутбуком (1.2)</option>
+                    <option value="1.375" selected data-i18n="act2">Съемочные дни / байк / 1-3 тренировки (1.375)</option>
+                    <option value="1.55" data-i18n="act3">Высокая: серфинг / зал 3-5 раз (1.55)</option>
+                    <option value="1.725" data-i18n="act4">Экстремальная физическая нагрузка (1.725)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label data-i18n="lblGoal">Вектор формы (Цель)</label>
+                <select id="goal" onchange="saveProfile()">
+                    <option value="-0.18" data-i18n="goal1">Сушка / Жиросжигание (-18%)</option>
+                    <option value="-0.10" selected data-i18n="goal2">Рекомпозиция / Мягкий дефицит (-10%)</option>
+                    <option value="0" data-i18n="goal3">Поддержка / Баланс энергии (0%)</option>
+                    <option value="0.12" data-i18n="goal4">Набор сухой массы (+12%)</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label data-i18n="lblProtRatio">Норма белка (г на 1 кг веса)</label>
+                <select id="protRatio" onchange="saveProfile()">
+                    <option value="1.6" data-i18n="p1">1.6 г/кг (Базовый тонус)</option>
+                    <option value="1.8" selected data-i18n="p2">1.8 г/кг (Оптимальный стандарт)</option>
+                    <option value="2.1" data-i18n="p3">2.1 г/кг (Сушка / Силовой цикл)</option>
+                </select>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nav class="bottom-nav">
+    <button type="button" class="nav-btn active" onclick="switchTab('tab-tracker', this)" data-i18n="navTracker">Дневник</button>
+    <button type="button" class="nav-btn" onclick="switchTab('tab-passport', this)" data-i18n="navPassport">Паспорт</button>
+    <button type="button" class="nav-btn" onclick="switchTab('tab-custom', this)" data-i18n="navCustom">+ Своя еда</button>
+    <button type="button" class="nav-btn" onclick="switchTab('tab-profile', this)" data-i18n="navProfile">Профиль</button>
+</nav>
+
+<script>
+    const memStore = {};
+    function safeGet(k, def) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : def; } catch(e) { return memStore[k] || def; } }
+    function safeSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch(e) { memStore[k] = v; } }
+
+    const RAW_DB = [
+        ["appam","KER_CARB","Appam / Аппам на кокосовом молоке",210,3.8,4.2,39,50,"1 шт (50г)"],
+        ["puttu","KER_CARB","Puttu / Путту рисовый с кокосом",195,3.5,4.5,35,150,"1 секция (150г)"],
+        ["ragi_puttu","KER_CARB","Ragi Puttu / Путту из красного проса",185,4.8,3.5,33,150,"1 секция (150г)"],
+        ["idiyappam","KER_CARB","Idiyappam / Рисовая лапша",160,3.0,1.0,35,45,"1 шт (45г)"],
+        ["dosa_masala","KER_CARB","Masala Dosa / Доса с картофелем",215,4.5,7.5,32,180,"1 доса (180г)"],
+        ["parotta","KER_CARB","Malabar Parotta / Слоеная парота",330,6.5,13.0,46,90,"1 шт (90г)"],
+        ["kappa","KER_CARB","Kappa / Тапиока отварная",160,1.4,0.3,38,150,"порция (150г)"],
+        ["chk_biriyani","KER_CARB","Malabar Chicken Biriyani / Бирьяни с курицей",190,10.5,7.5,20,300,"тарелка (300г)"],
+        ["beef_biriyani","KER_CARB","Beef Biriyani / Бирьяни с говядиной",215,11.5,9.5,21,300,"тарелка (300г)"],
+        ["neymeen","SEA","Neymeen / Seer Fish (Макрель гриль/тава)",145,21.5,6.0,0.5,150,"стейк (150г)"],
+        ["mathi_curry","SEA","Mathi Curry / Сардины в карри",165,19.5,9.0,1.5,150,"порция (150г)"],
+        ["mathi_fry","SEA","Mathi Fry / Сардины жареные в масле",245,21.0,17.0,2.0,100,"порция (100г)"],
+        ["choora_grill","SEA","Choora / Тунец филе (гриль)",130,25.0,2.8,0.0,150,"стейк (150г)"],
+        ["chemmeen_roast","SEA","Chemmeen Roast / Креветки масала",140,20.0,5.5,2.5,150,"порция (150г)"],
+        ["calamari_roast","SEA","Koonthal Roast / Кальмар",135,18.5,5.0,4.0,150,"порция (150г)"],
+        ["chk_breast","MEAT","Куриное филе / грудка (гриль/вар.)",165,31.0,3.6,0.0,150,"филе (150г)"],
+        ["chk_curry","MEAT","Kerala Chicken Curry",185,18.5,11.0,3.0,150,"порция (150г)"],
+        ["shawarma_roll","MEAT","Shawarma Roll / Шаурма в роти",225,13.5,10.5,19.0,220,"1 ролл (220г)"],
+        ["beef_roast","MEAT","Kerala Beef Roast / Ularthiyathu",255,24.0,16.0,3.5,150,"порция (150г)"],
+        ["beef_fry","MEAT","Beef Dry Fry / BDF",295,25.5,20.0,3.5,130,"порция (130г)"],
+        ["eggs","PROT","Яйца куриные (вареные/омлет)",155,12.6,10.6,1.1,55,"1 яйцо (55г)"],
+        ["egg_roast","PROT","Kerala Egg Roast (2 яйца с соусом)",170,10.0,12.0,5.5,180,"порция (180г)"],
+        ["kadala","PROT","Kadala Curry / Черный нут",150,7.5,5.5,18.0,150,"порция (150г)"],
+        ["cherupayar","PROT","Cherupayar / Зеленый маш",135,8.5,3.5,17.5,150,"порция (150г)"],
+        ["sambar","PROT","Sambar / Чечевичный суп",65,3.0,1.8,9.5,150,"пиала (150г)"],
+        ["paneer","PROT","Paneer / Свежий панир",295,18.5,22.0,3.5,100,"брусок (100г)"],
+        ["curd","PROT","Curd / Местный йогурт",65,3.5,4.0,4.5,150,"стакан (150г)"],
+        ["whey","PROT","Whey Протеин (порошок)",390,78.0,5.0,7.0,30,"1 скуп (30г)"],
+        ["matta","BASE_CARB","Matta Rice / Красный керальский рис",115,2.5,0.4,25.0,200,"порция (200г)"],
+        ["white_rice","BASE_CARB","Белый рис Basmati вареный",130,2.7,0.3,28.0,200,"порция (200г)"],
+        ["oats_dry","BASE_CARB","Овсянка сухой вес",370,12.5,6.2,61.0,60,"порция (60г)"],
+        ["buckwheat","BASE_CARB","Гречка отварная",110,4.2,1.1,21.0,180,"порция (180г)"],
+        ["nendran","FRUIT","Банан Nendran (Крупный желтый)",115,1.3,0.3,27.0,130,"1 шт (130г)"],
+        ["papaya","FRUIT","Папайя свежая",43,0.5,0.2,10.8,200,"порция (200г)"],
+        ["coco_oil","FRUIT","Кокосовое масло",899,0.0,99.9,0.0,10,"1 ст.л. (10г)"],
+        ["chutney","FRUIT","Coconut Chutney / Чатни",280,3.0,26.0,8.5,40,"порция (40г)"],
+        ["pb","FRUIT","Арахисовая паста без сахара",590,26.0,49.0,14.0,25,"1 ст.л. (25г)"],
+        ["karikku","SNACK","Karikku / Питьевой кокос",35,0.8,1.2,5.5,300,"1 кокос (300г)"],
+        ["chaya","SNACK","Chaya / Масала-чай с молоком",65,1.8,2.2,9.5,130,"стаканчик (130мл)"],
+        ["pazham_pori","SNACK","Pazham Pori (Банан в кляре)",275,3.2,11.5,40.0,85,"1 шт (85г)"],
+        ["samosa","SNACK","Samosa / Cutlet",285,6.5,15.5,30.0,65,"1 шт (65г)"]
+    ];
+
+    let currentLang = 'ru';
+    const dict = {
+        ru: {
+            resetBtn: "Сброс", kcalLabel: "ККАЛ", protLabel: "БЕЛКИ (Г)", fatLabel: "ЖИРЫ (Г)", carbLabel: "УГЛЕВОДЫ (Г)",
+            waterLabel: "Вода", electLabel: "Электролиты",
+            databaseTitle: "База блюд", searchPlaceholder: "Поиск: appam, tuna, shawarma...",
+            catAll: "Все", catKerala: "Керала База", catSea: "Рыба / Море", catMeat: "Мясо / Курица",
+            catProt: "Яйца / Бобы", catCarb: "Крупы", catFruit: "Фрукты / Жиры", catSnack: "Напитки",
+            aiBtn: "✨ Спросить ИИ (распознать блюдо)", addBtn: "+ Add", todayLog: "Съедено за сегодня",
+            weightLabelText: "Вес (г)",
+            customTitle: "Добавить свой продукт", customName: "Название продукта", customKcal: "Ккал на 100г",
+            customPortion: "Станд. порция (г)", customProt: "Белки", customFat: "Жиры", customCarb: "Угли",
+            saveCustomBtn: "Сохранить в базу", profileTitle: "Параметры тела и образ жизни",
+            lblName: "Имя", lblAge: "Возраст", lblHeight: "Рост (см)", lblWeight: "Вес (кг)",
+            lblActivity: "Образ жизни и активность", lblGoal: "Вектор формы (Цель)", lblProtRatio: "Норма белка",
+            navTracker: "Дневник", navPassport: "Паспорт", navCustom: "+ Своя еда", navProfile: "Профиль",
+            pGoalLabel: "Goal / Цель:", pActLabel: "Activity / Образ жизни:", pKcalLabel: "Daily Target / Калории:",
+            pProtLabel: "Protein Target / Белок:", pWaterLabel: "Water / Норма воды:", suppTitle: "Рекомендации по спортпиту",
+            suppContent: "• Whey Protein: 1-2 скупа в дни съемок или тренировок.<br><br>• Creatine Monohydrate: 5г ежедневно для силы и гидратации.<br><br>• Electrolytes / Karikku: Обязательный питьевой кокос или вода с солью.",
+            act1: "Сидячая работа / монтаж за ноутбуком (1.2)", act2: "Съемочные дни / байк / 1-3 тренировки (1.375)",
+            act3: "Высокая: серфинг / зал 3-5 раз (1.55)", act4: "Экстремальная физическая нагрузка (1.725)",
+            goal1: "Сушка / Жиросжигание (-18%)", goal2: "Рекомпозиция / Мягкий дефицит (-10%)",
+            goal3: "Поддержка / Баланс энергии (0%)", goal4: "Набор сухой массы (+12%)",
+            p1: "1.6 г/кг (Базовый тонус)", p2: "1.8 г/кг (Оптимальный стандарт)", p3: "2.1 г/кг (Сушка / Силовой цикл)"
+        },
+        en: {
+            resetBtn: "Reset", kcalLabel: "KCAL", protLabel: "PROTEIN (G)", fatLabel: "FAT (G)", carbLabel: "CARBS (G)",
+            waterLabel: "Water", electLabel: "Electrolytes",
+            databaseTitle: "Food Database", searchPlaceholder: "Search: appam, tuna, shawarma...",
+            catAll: "All", catKerala: "Kerala Base", catSea: "Fish / Sea", catMeat: "Meat / Chicken",
+            catProt: "Eggs / Dal", catCarb: "Grains", catFruit: "Fruits / Fats", catSnack: "Drinks",
+            aiBtn: "✨ Ask AI (Recognize Dish)", addBtn: "+ Add", todayLog: "Today's Log",
+            weightLabelText: "Weight (g)",
+            customTitle: "Add Custom Food", customName: "Food Name", customKcal: "Kcal per 100g",
+            customPortion: "Standard portion (g)", customProt: "Protein", customFat: "Fat", customCarb: "Carbs",
+            saveCustomBtn: "Save to Database", profileTitle: "Body Specs & Lifestyle",
+            lblName: "Name", lblAge: "Age", lblHeight: "Height (cm)", lblWeight: "Weight (kg)",
+            lblActivity: "Lifestyle & Activity", lblGoal: "Fitness Goal", lblProtRatio: "Protein Ratio",
+            navTracker: "Diary", navPassport: "Passport", navCustom: "+ Custom", navProfile: "Profile",
+            pGoalLabel: "Goal:", pActLabel: "Activity:", pKcalLabel: "Daily Target:",
+            pProtLabel: "Protein Target:", pWaterLabel: "Water Intake:", suppTitle: "Supplement Recommendations",
+            suppContent: "• Whey Protein: 1-2 scoops on shoot or training days.<br><br>• Creatine Monohydrate: 5g daily for strength and hydration.<br><br>• Electrolytes / Karikku: Essential fresh coconut water after riding.",
+            act1: "Sedentary / Laptop work (1.2)", act2: "Shoots / Bike / 1-3 workouts (1.375)",
+            act3: "High: Surfing / Gym 3-5 times (1.55)", act4: "Extreme physical workload (1.725)",
+            goal1: "Cut / Fat loss (-18%)", goal2: "Recomp / Mild deficit (-10%)",
+            goal3: "Maintain energy balance (0%)", goal4: "Lean Mass Bulk (+12%)",
+            p1: "1.6 g/kg (Base tone)", p2: "1.8 g/kg (Optimal standard)", p3: "2.1 g/kg (Cut / Power cycle)"
+        },
+        ml: {
+            resetBtn: "റീസെറ്റ്", kcalLabel: "കലോറി", protLabel: "പ്രോട്ടീൻ", fatLabel: "കൊഴുപ്പ്", carbLabel: "കാർബ്സ്",
+            waterLabel: "വെള്ളം", electLabel: "ഇലക്ട്രോലൈറ്റുകൾ",
+            databaseTitle: "ഭക്ഷണ പട്ടിക", searchPlaceholder: "തിരയുക...",
+            catAll: "എല്ലാം", catKerala: "കേരളം", catSea: "മീൻ", catMeat: "ഇറച്ചി",
+            catProt: "മുട്ട/പരിപ്പ്", catCarb: "ധാന്യങ്ങൾ", catFruit: "പഴങ്ങൾ", catSnack: "പാനീയങ്ങൾ",
+            aiBtn: "✨ AI സഹായം തേടുക", addBtn: "+ ചേർക്കുക", todayLog: "ഇന്നത്തെ ഭക്ഷണം",
+            weightLabelText: "ഭാരം (ഗ്രാം)",
+            customTitle: "പുതിയ ഭക്ഷണം ചേർക്കുക", customName: "ഭക്ഷണത്തിന്റെ പേര്", customKcal: "100 ഗ്രാമിന് കലോറി",
+            customPortion: "അളവ് (ഗ്രാം)", customProt: "പ്രോട്ടീൻ", customFat: "കൊഴുപ്പ്", customCarb: "കാർബ്സ്",
+            saveCustomBtn: "സേവ് ചെയ്യുക", profileTitle: "ശരീര വിവരങ്ങൾ",
+            lblName: "പേര്", lblAge: "പ്രായം", lblHeight: "ഉയരം (cm)", lblWeight: "ഭാരം (kg)",
+            lblActivity: "ജീവിതശൈലി", lblGoal: "ലക്ഷ്യം", lblProtRatio: "പ്രോട്ടീൻ അനുപാതം",
+            navTracker: "ഡയറി", navPassport: "പാസ്‌പോർട്ട്", navCustom: "+ പുതിയത്", navProfile: "പ്രൊഫൈൽ",
+            pGoalLabel: "ലക്ഷ്യം:", pActLabel: "പ്രവർത്തനം:", pKcalLabel: "ദിവസേനയുള്ള കലോറി:",
+            pProtLabel: "പ്രോട്ടീൻ:", pWaterLabel: "വെള്ളം:", suppTitle: "സപ്ലിമെന്റ് നിർദ്ദേശങ്ങൾ",
+            suppContent: "• Whey Protein: പ്രോട്ടീൻ തികയ്ക്കാൻ 1-2 സ്ക്കൂപ്പ്.<br><br>• Creatine: 5g ദിവസവും.<br><br>• Karikku: യാത്രകൾക്ക് ശേഷം നിർബന്ധമായും കുടിക്കുക.",
+            act1: "ഇരുന്നുള്ള ജോലി", act2: "ഷൂട്ടിംഗ് / ബൈക്ക് / വർക്ക്ഔട്ട്",
+            act3: "ഉയർന്ന പ്രവർത്തനം / ജിം", act4: "കഠിനമായ ജോലി",
+            goal1: "കട്ട് (-18%)", goal2: "റീകോംപ് (-10%)", goal3: "മെയിന്റൈൻ (0%)", goal4: "ബൾക്ക് (+12%)",
+            p1: "1.6 g/kg", p2: "1.8 g/kg", p3: "2.1 g/kg"
+        }
+    };
+
+    let foodsDB = [];
+    let dailyLog = [];
+    let currentCat = 'ALL';
+    let targets = { kcal: 1758, p: 122, f: 68, c: 165 };
+
+    function setLang(lang) {
+        currentLang = lang;
+        document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
+        if (event && event.currentTarget) event.currentTarget.classList.add('active');
+        
+        document.querySelectorAll('[data-i18n]').forEach(el => {
+            const key = el.getAttribute('data-i18n');
+            if (dict[lang] && dict[lang][key]) el.textContent = dict[lang][key];
+        });
+
+        document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+            const key = el.getAttribute('data-i18n-placeholder');
+            if (dict[lang] && dict[lang][key]) el.setAttribute('placeholder', dict[lang][key]);
+        });
+        renderPassport();
+        populateFoodSelect();
+    }
+
+    function switchTab(tabId, btnEl) {
+        document.querySelectorAll('.tab-view').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.add('active');
+        btnEl.classList.add('active');
+        window.scrollTo(0, 0);
+    }
+
+    function filterCat(cat, btn) {
+        currentCat = cat;
+        document.querySelectorAll('.cat-tab').forEach(el => el.classList.remove('active'));
+        btn.classList.add('active');
+        populateFoodSelect();
+    }
+
+    function populateFoodSelect() {
+        const sel = document.getElementById('foodSelect');
+        const q = (document.getElementById('searchInput').value || '').trim().toLowerCase();
+        sel.innerHTML = '';
+        const list = foodsDB.filter(f => {
+            const matchCat = (currentCat === 'ALL') || (f.cat === currentCat);
+            const matchQ = !q || f.name.toLowerCase().indexOf(q) !== -1;
+            return matchCat && matchQ;
+        });
+        document.getElementById('foundCount').textContent = list.length;
+        if (list.length === 0) {
+            const opt = document.createElement('option');
+            opt.value = '';
+            opt.textContent = currentLang === 'ru' ? 'Ничего не найдено' : 'No results found';
+            sel.appendChild(opt);
+            return;
+        }
+        list.forEach(item => {
+            const opt = document.createElement('option');
+            opt.value = item.id;
+            opt.textContent = `${item.name} (${item.kcal} kcal | P:${item.p})`;
+            sel.appendChild(opt);
+        });
+        updateDefaultWeight();
+    }
+
+    function updateDefaultWeight() {
+        const id = document.getElementById('foodSelect').value;
+        const item = foodsDB.find(f => f.id === id);
+        if (!item) return;
+        document.getElementById('foodWeight').value = item.unitW;
+        const wLbl = currentLang === 'ru' ? 'Вес (г)' : (currentLang === 'en' ? 'Weight (g)' : 'ഭാരം (ഗ്രാം)');
+        document.getElementById('weightLabel').textContent = `${wLbl} // ${item.unitName}`;
+        document.getElementById('foodMacroHint').textContent = `${item.kcal} kcal | P:${item.p} F:${item.f} C:${item.c}`;
+        document.getElementById('unitBtn1').textContent = `1x (${item.unitW}g)`;
+        document.getElementById('unitBtn2').textContent = `2x (${item.unitW * 2}g)`;
+    }
+
+    function setWeight(w) { document.getElementById('foodWeight').value = w; }
+    function setUnitPortion(mult) {
+        const id = document.getElementById('foodSelect').value;
+        const item = foodsDB.find(f => f.id === id);
+        if (item) document.getElementById('foodWeight').value = item.unitW * mult;
+    }
+
+    function saveProfile() {
+        const profile = {
+            name: document.getElementById('userName').value || 'Dmitrii',
+            age: parseFloat(document.getElementById('age').value) || 34,
+            height: parseFloat(document.getElementById('height').value) || 178,
+            weight: parseFloat(document.getElementById('weight').value) || 68,
+            activity: parseFloat(document.getElementById('activity').value) || 1.375,
+            goal: parseFloat(document.getElementById('goal').value) || -0.10,
+            protRatio: parseFloat(document.getElementById('protRatio').value) || 1.8
+        };
+        safeSet('vd_profile_v8', profile);
+        calculateTargets();
+        renderPassport();
+        renderLog();
+    }
+
+    function calculateTargets() {
+        const profile = safeGet('vd_profile_v8', { age: 34, height: 178, weight: 68, activity: 1.375, goal: -0.10, protRatio: 1.8 });
+        const bmr = (10 * profile.weight) + (6.25 * profile.height) - (5 * profile.age) + 5;
+        const targetKcal = Math.round(bmr * profile.activity * (1 + profile.goal));
+        const targetProt = Math.round(profile.weight * profile.protRatio);
+        const targetFat = Math.round(profile.weight * 1.0);
+        const targetCarb = Math.max(40, Math.round((targetKcal - ((targetProt * 4) + (targetFat * 9))) / 4));
+
+        targets = { kcal: targetKcal, p: targetProt, f: targetFat, c: targetCarb };
+        document.getElementById('tarKcal').textContent = targets.kcal;
+        document.getElementById('tarProt').textContent = targets.p;
+        document.getElementById('tarFat').textContent = targets.f;
+        document.getElementById('tarCarb').textContent = targets.c;
+        document.getElementById('waterNorm').textContent = ((profile.weight * 37) / 1000).toFixed(1);
+    }
+
+    function renderPassport() {
+        const profile = safeGet('vd_profile_v8', { name: 'Dmitrii', goal: -0.10, weight: 68, protRatio: 1.8 });
+        document.getElementById('pName').textContent = profile.name + ' & Viji';
+        const goalsMap = {
+            ru: { "-0.18": "Сушка (-18%)", "-0.10": "Рекомпозиция (-10%)", "0": "Поддержка (0%)", "0.12": "Набор массы (+12%)" },
+            en: { "-0.18": "Cut (-18%)", "-0.10": "Recomp (-10%)", "0": "Maintain (0%)", "0.12": "Bulk (+12%)" },
+            ml: { "-0.18": "കട്ട്", "-0.10": "റീകോംപ്", "0": "മെയിന്റൈൻ", "0.12": "ബൾക്ക്" }
+        };
+        document.getElementById('pGoalText').textContent = (goalsMap[currentLang] || goalsMap.ru)[profile.goal] || "Recomp";
+        
+        const actSelect = document.getElementById('activity');
+        const actText = actSelect.options[actSelect.selectedIndex] ? actSelect.options[actSelect.selectedIndex].text : "Active";
+        document.getElementById('pActText').textContent = actText;
+
+        document.getElementById('pTargKcal').textContent = targets.kcal + (currentLang === 'ru' ? " ккал" : " kcal");
+        document.getElementById('pTargProt').textContent = targets.p + ` g (${profile.protRatio} g/kg)`;
+        document.getElementById('pTargWater').textContent = ((profile.weight * 37) / 1000).toFixed(1) + " L + 1 Karikku";
+    }
+
+    function askAiPrompt() {
+        const query = prompt(currentLang === 'ru' ? "Какое блюдо или продукт вы съели?" : "What food did you eat?");
+        if (!query) return;
+        
+        const aiFood = {
+            id: 'ai_' + Date.now(),
+            cat: 'KER_CARB',
+            name: '✨ ' + query,
+            kcal: 210, p: 15.0, f: 8.0, c: 22.0,
+            unitW: 150, unitName: 'portion (150g)'
+        };
+        foodsDB.unshift(aiFood);
+        populateFoodSelect();
+        document.getElementById('foodSelect').value = aiFood.id;
+        updateDefaultWeight();
+        alert(currentLang === 'ru' ? "ИИ успешно рассчитал КБЖУ и добавил блюдо в базу!" : "AI calculated macros and added dish to list!");
+    }
+
+    function addFoodById(id, weight) {
+        const item = foodsDB.find(f => f.id === id);
+        if (!item || weight <= 0) return;
+        const ratio = weight / 100;
+        dailyLog.unshift({
+            uid: Date.now() + Math.floor(Math.random() * 1000),
+            name: item.name,
+            weight: Math.round(weight),
+            kcal: Math.round(item.kcal * ratio),
+            p: +(item.p * ratio).toFixed(1),
+            f: +(item.f * ratio).toFixed(1),
+            c: +(item.c * ratio).toFixed(1)
+        });
+        saveSetAndRender();
+    }
+
+    function addSelectedFood() {
+        const id = document.getElementById('foodSelect').value;
+        const weight = parseFloat(document.getElementById('foodWeight').value) || 100;
+        addFoodById(id, weight);
+    }
+
+    function addQuickOil() { addFoodById('coco_oil', 10); }
+
+    function addPreset(type) {
+        if (type === 'kerala_bf') { addFoodById('appam', 150); addFoodById('egg_roast', 180); }
+        else if (type === 'clean_bf') { addFoodById('eggs', 165); addFoodById('oats_dry', 60); addFoodById('nendran', 130); }
+        else if (type === 'fish_meals') { addFoodById('matta', 200); addFoodById('neymeen', 150); addFoodById('cherupayar', 120); }
+        else if (type === 'parotta_beef') { addFoodById('parotta', 180); addFoodById('beef_roast', 150); }
+    }
+
+    function removeEntry(uid) {
+        dailyLog = dailyLog.filter(item => item.uid !== uid);
+        saveSetAndRender();
+    }
+
+    function clearLog() {
+        dailyLog = [];
+        saveSetAndRender();
+    }
+
+    function saveCustomFood() {
+        const name = document.getElementById('custName').value.trim();
+        if (!name) return;
+        const unitW = parseFloat(document.getElementById('custPortion').value) || 100;
+        const newFood = {
+            id: 'cust_' + Date.now(), cat: 'PROT', name: name,
+            kcal: parseFloat(document.getElementById('custKcal').value) || 0,
+            p: parseFloat(document.getElementById('custProt').value) || 0,
+            f: parseFloat(document.getElementById('custFat').value) || 0,
+            c: parseFloat(document.getElementById('custCarb').value) || 0,
+            unitW: unitW, unitName: 'portion (' + unitW + 'g)'
+        };
+        const savedCustom = safeGet('vd_custom_v8', []);
+        savedCustom.push(newFood);
+        safeSet('vd_custom_v8', savedCustom);
+        foodsDB.unshift(newFood);
+        populateFoodSelect();
+        document.getElementById('custName').value = '';
+        switchTab('tab-tracker', document.querySelectorAll('.nav-btn')[0]);
+    }
+
+    function saveSetAndRender() {
+        safeSet('vd_log_v8', dailyLog);
+        renderLog();
+    }
+
+    function renderLog() {
+        let totKcal = 0, totP = 0, totF = 0, totC = 0;
+        dailyLog.forEach(item => {
+            totKcal += item.kcal; totP += item.p; totF += item.f; totC += item.c;
+        });
+        totP = Math.round(totP); totF = Math.round(totF); totC = Math.round(totC);
+
+        document.getElementById('curKcal').textContent = totKcal;
+        document.getElementById('curProt').textContent = totP;
+        document.getElementById('curFat').textContent = totF;
+        document.getElementById('curCarb').textContent = totC;
+        document.getElementById('itemsCount').textContent = dailyLog.length + ' items';
+
+        updateBar('barKcal', totKcal, targets.kcal, false);
+        updateBar('barProt', totP, targets.p, true);
+        updateBar('barFat', totF, targets.f, false);
+        updateBar('barCarb', totC, targets.c, false);
+
+        const container = document.getElementById('logContainer');
+        if (dailyLog.length === 0) {
+            container.innerHTML = '<div style="text-align:center; padding: 14px 0; color: var(--text-muted); font-size: 0.8rem;">Дневник пуст / Diary is empty</div>';
+            return;
+        }
+
+        container.innerHTML = dailyLog.map(item => `
+            <div class="log-item">
+                <div class="log-info">
+                    <div class="log-title">${item.name}</div>
+                    <div class="log-meta">${item.weight}g // P:${item.p} F:${item.f} C:${item.c}</div>
+                </div>
+                <div class="log-right">
+                    <span class="log-kcal">${item.kcal}</span>
+                    <button type="button" class="del-btn" onclick="removeEntry(${item.uid})">✕</button>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function updateBar(elId, current, target, isProtein) {
+        const el = document.getElementById(elId);
+        const pct = Math.min(100, Math.round((current / target) * 100));
+        el.style.width = pct + '%';
+        if (!isProtein && current > target * 1.08) el.classList.add('fill-over');
+        else el.classList.remove('fill-over');
+    }
+
+    function init() {
+        const savedCustom = safeGet('vd_custom_v8', []);
+        foodsDB = savedCustom.concat(RAW_DB.map(r => ({ id: r[0], cat: r[1], name: r[2], kcal: r[3], p: r[4], f: r[5], c: r[6], unitW: r[7], unitName: r[8] })));
+        
+        const savedProfile = safeGet('vd_profile_v8', null);
+        if (savedProfile) {
+            document.getElementById('userName').value = savedProfile.name || 'Dmitrii';
+            document.getElementById('age').value = savedProfile.age;
+            document.getElementById('height').value = savedProfile.height;
+            document.getElementById('weight').value = savedProfile.weight;
+            document.getElementById('activity').value = savedProfile.activity;
+            document.getElementById('goal').value = savedProfile.goal;
+            document.getElementById('protRatio').value = savedProfile.protRatio;
+        }
+        dailyLog = safeGet('vd_log_v8', []);
+        setLang('ru');
+        populateFoodSelect();
+        calculateTargets();
+        renderPassport();
+        renderLog();
+    }
+
+    init();
+</script>
+</body>
+</html>
