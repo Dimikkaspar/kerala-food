@@ -3,20 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>V&D • KERALA MACRO ENGINE</title>
+    <title>V&D • BOHOCULT MACRO ENGINE</title>
     <style>
         :root {
-            --bg-main: #0c0e12;
-            --bg-card: #141720;
-            --bg-input: #1a1e2b;
+            --bg-main: #0c1210;
+            --bg-card: #141c18;
+            --bg-input: #1a2420;
             --gold: #D4AF37;
             --gold-dim: rgba(212, 175, 55, 0.15);
             --sand: #c2b280;
-            --cyan: #00f0ff;
-            --magenta: #ff2a6d;
-            --text-main: #f2f4f8;
-            --text-muted: #8a93a6;
-            --border: #262c3d;
+            --cyan: #5bc0be;
+            --magenta: #e06d75;
+            --text-main: #f0f4f1;
+            --text-muted: #8c9a94;
+            --border: #23332c;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
         html, body {
@@ -31,8 +31,8 @@
             display: flex; justify-content: space-between; align-items: center;
             padding-bottom: 12px; margin-bottom: 14px; border-bottom: 1px solid var(--border);
         }
-        .app-title { font-weight: 800; font-size: 1.1rem; color: var(--gold); letter-spacing: 1px; }
-        .app-sub { font-family: ui-monospace, monospace; font-size: 0.68rem; color: var(--sand); margin-top: 2px; }
+        .app-title { font-weight: 800; font-size: 1.05rem; color: var(--gold); letter-spacing: 1.2px; text-transform: uppercase; }
+        .app-sub { font-family: ui-monospace, monospace; font-size: 0.65rem; color: var(--sand); margin-top: 2px; }
         
         .lang-switch { display: flex; gap: 4px; background: var(--bg-input); padding: 3px; border-radius: 6px; border: 1px solid var(--border); }
         .lang-btn { background: none; border: none; color: var(--text-muted); font-size: 0.68rem; font-weight: 700; padding: 4px 8px; border-radius: 4px; cursor: pointer; }
@@ -44,7 +44,7 @@
         .card {
             background: var(--bg-card); border: 1px solid var(--border);
             border-radius: 12px; padding: 16px; margin-bottom: 14px; width: 100%;
-            box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.5);
         }
         .card-header {
             font-family: ui-monospace, monospace; font-size: 0.72rem;
@@ -59,7 +59,7 @@
         .macro-val { font-family: ui-monospace, monospace; font-size: 1.15rem; font-weight: 700; margin: 4px 0 6px 0; color: #fff; }
         .macro-target { font-size: 0.75rem; color: var(--text-muted); font-weight: 400; }
         
-        .progress-track { height: 6px; background: #0c0e12; border-radius: 3px; overflow: hidden; }
+        .progress-track { height: 6px; background: #0c1210; border-radius: 3px; overflow: hidden; }
         .progress-fill { height: 100%; width: 0%; transition: width 0.25s ease; }
         .fill-kcal { background: var(--gold); }
         .fill-prot { background: var(--cyan); }
@@ -81,12 +81,12 @@
             font-family: ui-monospace, monospace; font-size: 0.73rem; cursor: pointer;
         }
         .chip-btn:active { background: var(--gold-dim); border-color: var(--gold); }
-        .chip-oil { border-color: rgba(255, 42, 109, 0.5); color: #ff85a9; }
+        .chip-oil { border-color: rgba(224, 109, 117, 0.5); color: #ff85a9; }
 
         .cat-scroll { display: flex; gap: 6px; overflow-x: auto; padding-bottom: 8px; margin-bottom: 10px; scrollbar-width: none; }
         .cat-scroll::-webkit-scrollbar { display: none; }
         .cat-tab {
-            flex: 0 0 auto; background: #10131a; border: 1px solid var(--border);
+            flex: 0 0 auto; background: var(--bg-input); border: 1px solid var(--border);
             color: var(--text-muted); padding: 7px 11px; border-radius: 6px;
             font-size: 0.7rem; font-weight: 600; cursor: pointer; white-space: nowrap;
         }
@@ -104,11 +104,12 @@
 
         .weight-pills { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; margin-top: 10px; }
         .pill-btn {
-            background: #10131a; border: 1px solid var(--border); color: var(--text-main);
+            background: var(--bg-input); border: 1px solid var(--border); color: var(--text-main);
             padding: 9px 4px; border-radius: 6px; font-family: ui-monospace, monospace;
             font-size: 0.72rem; cursor: pointer; text-align: center;
         }
-        .pill-btn.unit { border-color: rgba(0, 240, 255, 0.35); color: var(--cyan); }
+        .pill-btn.unit { border-color: rgba(91, 192, 190, 0.5); color: var(--cyan); }
+        .pill-btn:active { border-color: var(--gold); color: var(--gold); }
 
         .btn-primary {
             width: 100%; background: var(--gold); color: #000; border: none;
@@ -118,20 +119,20 @@
         .btn-primary:active { opacity: 0.8; }
         
         .ai-btn {
-            background: linear-gradient(135deg, rgba(0,240,255,0.15), rgba(212,175,55,0.15));
+            background: linear-gradient(135deg, rgba(91,192,190,0.15), rgba(212,175,55,0.15));
             border: 1px solid var(--cyan); color: var(--cyan);
             padding: 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 700;
             width: 100%; margin-top: 8px; cursor: pointer; text-transform: uppercase;
         }
 
         .btn-reset {
-            background: #1d141b; border: 1px solid var(--magenta); color: var(--magenta);
+            background: #24191c; border: 1px solid var(--magenta); color: var(--magenta);
             padding: 7px 12px; border-radius: 6px; font-size: 0.7rem; font-weight: 700;
             text-transform: uppercase; cursor: pointer;
         }
 
         .passport-card {
-            background: linear-gradient(145deg, #161b26, #10131a);
+            background: linear-gradient(145deg, #16201b, #101814);
             border: 1.5px solid var(--gold);
             border-radius: 14px; padding: 18px; margin-bottom: 14px;
             position: relative; overflow: hidden;
@@ -148,17 +149,17 @@
 
         .log-item {
             display: flex; justify-content: space-between; align-items: center;
-            padding: 10px 0; border-bottom: 1px solid #1f2430; gap: 8px;
+            padding: 10px 0; border-bottom: 1px solid var(--border); gap: 8px;
         }
         .log-item:last-child { border-bottom: none; }
         .log-title { font-size: 0.85rem; font-weight: 600; color: var(--text-main); }
         .log-meta { font-family: ui-monospace, monospace; font-size: 0.7rem; color: var(--text-muted); margin-top: 2px; }
         .log-right { display: flex; align-items: center; gap: 10px; }
         .log-kcal { font-family: ui-monospace, monospace; font-size: 0.85rem; font-weight: 700; color: var(--gold); }
-        .del-btn { background: #231922; border: 1px solid var(--magenta); color: var(--magenta); width: 30px; height: 30px; border-radius: 6px; font-weight: 700; cursor: pointer; }
+        .del-btn { background: #24191c; border: 1px solid var(--magenta); color: var(--magenta); width: 30px; height: 30px; border-radius: 6px; font-weight: 700; cursor: pointer; }
 
         .bottom-nav {
-            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(14, 17, 24, 0.95);
+            position: fixed; bottom: 0; left: 0; right: 0; background: rgba(12, 18, 16, 0.95);
             backdrop-filter: blur(10px); border-top: 1px solid var(--border); display: grid;
             grid-template-columns: repeat(4, 1fr); padding-bottom: env(safe-area-inset-bottom, 10px); z-index: 999;
         }
@@ -175,8 +176,8 @@
 <div class="app-container">
     <header class="app-header">
         <div>
-            <div class="app-title">V&D • KERALA MACRO</div>
-            <div class="app-sub" id="hdrSub">Bohocult Sanctuary Hub</div>
+            <div class="app-title">V&D • BOHOCULT</div>
+            <div class="app-sub" id="hdrSub">Sanctuary & Media Hub</div>
         </div>
         <div style="display: flex; gap: 8px; align-items: center;">
             <div class="lang-switch">
@@ -239,12 +240,12 @@
 
             <div class="cat-scroll">
                 <button type="button" class="cat-tab active" onclick="filterCat('ALL', this)" data-i18n="catAll">Все</button>
-                <button type="button" class="cat-tab" onclick="filterCat('KER_CARB', this)" data-i18n="catKerala">Керала База</button>
-                <button type="button" class="cat-tab" onclick="filterCat('SEA', this)" data-i18n="catSea">Рыба / Море</button>
-                <button type="button" class="cat-tab" onclick="filterCat('MEAT', this)" data-i18n="catMeat">Мясо / Курица</button>
-                <button type="button" class="cat-tab" onclick="filterCat('PROT', this)" data-i18n="catProt">Яйца / Бобы</button>
+                <button type="button" class="cat-tab" onclick="filterCat('KER_CARB', this)" data-i18n="catKerala">Керала</button>
+                <button type="button" class="cat-tab" onclick="filterCat('SEA', this)" data-i18n="catSea">Рыба</button>
+                <button type="button" class="cat-tab" onclick="filterCat('MEAT', this)" data-i18n="catMeat">Мясо</button>
+                <button type="button" class="cat-tab" onclick="filterCat('PROT', this)" data-i18n="catProt">Яйца/Бобы</button>
                 <button type="button" class="cat-tab" onclick="filterCat('BASE_CARB', this)" data-i18n="catCarb">Крупы</button>
-                <button type="button" class="cat-tab" onclick="filterCat('FRUIT', this)" data-i18n="catFruit">Фрукты / Жиры</button>
+                <button type="button" class="cat-tab" onclick="filterCat('FRUIT', this)" data-i18n="catFruit">Фрукты</button>
                 <button type="button" class="cat-tab" onclick="filterCat('SNACK', this)" data-i18n="catSnack">Напитки</button>
             </div>
 
@@ -282,7 +283,7 @@
     <!-- ВКЛАДКА 2: ПАСПОРТ ПИТАНИЯ -->
     <div id="tab-passport" class="tab-view">
         <div class="passport-card">
-            <div class="passport-title">V&D • Certified Nutrition Passport</div>
+            <div class="passport-title">Bohocult • Nutrition Passport</div>
             <div class="passport-name" id="pName">Dmitrii & Viji</div>
             <div class="passport-row"><span data-i18n="pGoalLabel">Goal / Цель:</span> <strong id="pGoalText" style="color: var(--gold);">Рекомпозиция (-10%)</strong></div>
             <div class="passport-row"><span data-i18n="pActLabel">Activity / Образ жизни:</span> <strong id="pActText">Сидячая / Ноутбук</strong></div>
@@ -451,8 +452,8 @@
             resetBtn: "Сброс", kcalLabel: "ККАЛ", protLabel: "БЕЛКИ (Г)", fatLabel: "ЖИРЫ (Г)", carbLabel: "УГЛЕВОДЫ (Г)",
             waterLabel: "Вода", electLabel: "Электролиты",
             databaseTitle: "База блюд", searchPlaceholder: "Поиск: appam, tuna, shawarma...",
-            catAll: "Все", catKerala: "Керала База", catSea: "Рыба / Море", catMeat: "Мясо / Курица",
-            catProt: "Яйца / Бобы", catCarb: "Крупы", catFruit: "Фрукты / Жиры", catSnack: "Напитки",
+            catAll: "Все", catKerala: "Керала", catSea: "Рыба", catMeat: "Мясо",
+            catProt: "Яйца/Бобы", catCarb: "Крупы", catFruit: "Фрукты", catSnack: "Напитки",
             aiBtn: "✨ Спросить ИИ (распознать блюдо)", addBtn: "+ Add", todayLog: "Съедено за сегодня",
             weightLabelText: "Вес (г)",
             customTitle: "Добавить свой продукт", customName: "Название продукта", customKcal: "Ккал на 100г",
@@ -479,8 +480,8 @@
             resetBtn: "Reset", kcalLabel: "KCAL", protLabel: "PROTEIN (G)", fatLabel: "FAT (G)", carbLabel: "CARBS (G)",
             waterLabel: "Water", electLabel: "Electrolytes",
             databaseTitle: "Food Database", searchPlaceholder: "Search: appam, tuna, shawarma...",
-            catAll: "All", catKerala: "Kerala Base", catSea: "Fish / Sea", catMeat: "Meat / Chicken",
-            catProt: "Eggs / Dal", catCarb: "Grains", catFruit: "Fruits / Fats", catSnack: "Drinks",
+            catAll: "All", catKerala: "Kerala", catSea: "Fish", catMeat: "Meat",
+            catProt: "Eggs/Dal", catCarb: "Grains", catFruit: "Fruits", catSnack: "Drinks",
             aiBtn: "✨ Ask AI (Recognize Dish)", addBtn: "+ Add", todayLog: "Today's Log",
             weightLabelText: "Weight (g)",
             customTitle: "Add Custom Food", customName: "Food Name", customKcal: "Kcal per 100g",
@@ -644,14 +645,14 @@
             goal: parseFloat(document.getElementById('goal').value) || -0.10,
             protRatio: parseFloat(document.getElementById('protRatio').value) || 1.8
         };
-        safeSet('vd_profile_v11', profile);
+        safeSet('vd_profile_v12', profile);
         calculateTargets();
         renderPassport();
         renderLog();
     }
 
     function calculateTargets() {
-        const profile = safeGet('vd_profile_v11', { age: 34, height: 178, weight: 68, activity: 1.375, goal: -0.10, protRatio: 1.8 });
+        const profile = safeGet('vd_profile_v12', { age: 34, height: 178, weight: 68, activity: 1.375, goal: -0.10, protRatio: 1.8 });
         const bmr = (10 * profile.weight) + (6.25 * profile.height) - (5 * profile.age) + 5;
         const targetKcal = Math.round(bmr * profile.activity * (1 + profile.goal));
         const targetProt = Math.round(profile.weight * profile.protRatio);
@@ -667,7 +668,7 @@
     }
 
     function renderPassport() {
-        const profile = safeGet('vd_profile_v11', { name: 'Dmitrii', goal: -0.10, weight: 68, protRatio: 1.8 });
+        const profile = safeGet('vd_profile_v12', { name: 'Dmitrii', goal: -0.10, weight: 68, protRatio: 1.8 });
         document.getElementById('pName').textContent = profile.name + ' & Viji';
         const goalsMap = {
             ru: { "-0.18": "Сушка (-18%)", "-0.10": "Рекомпозиция (-10%)", "0": "Поддержка (0%)", "0.12": "Набор массы (+12%)" },
@@ -758,9 +759,9 @@
             c: parseFloat(document.getElementById('custCarb').value) || 0,
             unitW: unitW, unitName: 'portion (' + unitW + 'g)'
         };
-        const savedCustom = safeGet('vd_custom_v11', []);
+        const savedCustom = safeGet('vd_custom_v12', []);
         savedCustom.push(newFood);
-        safeSet('vd_custom_v11', savedCustom);
+        safeSet('vd_custom_v12', savedCustom);
         foodsDB.unshift(newFood);
         populateFoodSelect();
         document.getElementById('custName').value = '';
@@ -768,7 +769,7 @@
     }
 
     function saveSetAndRender() {
-        safeSet('vd_log_v11', dailyLog);
+        safeSet('vd_log_v12', dailyLog);
         renderLog();
     }
 
@@ -786,7 +787,7 @@
         document.getElementById('itemsCount').textContent = dailyLog.length + ' items';
 
         updateBar('barKcal', totKcal, targets.kcal, false);
-        updateBar('barProt', totP, targets.p, true);
+        updateBar('barProt',totP, targets.p, true);
         updateBar('barFat', totF, targets.f, false);
         updateBar('barCarb', totC, targets.c, false);
 
@@ -820,10 +821,10 @@
     }
 
     function init() {
-        const savedCustom = safeGet('vd_custom_v11', []);
+        const savedCustom = safeGet('vd_custom_v12', []);
         foodsDB = savedCustom.concat(RAW_DB.map(r => ({ id: r[0], cat: r[1], name: r[2], kcal: r[3], p: r[4], f: r[5], c: r[6], unitW: r[7], unitName: r[8] })));
         
-        const savedProfile = safeGet('vd_profile_v11', null);
+        const savedProfile = safeGet('vd_profile_v12', null);
         if (savedProfile) {
             document.getElementById('userName').value = savedProfile.name || 'Dmitrii';
             document.getElementById('age').value = savedProfile.age;
@@ -833,7 +834,7 @@
             document.getElementById('goal').value = savedProfile.goal;
             document.getElementById('protRatio').value = savedProfile.protRatio;
         }
-        dailyLog = safeGet('vd_log_v11', []);
+        dailyLog = safeGet('vd_log_v12', []);
         setLang('ru');
         populateFoodSelect();
         calculateTargets();
