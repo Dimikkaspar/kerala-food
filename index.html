@@ -303,7 +303,7 @@
             <div class="card-header"><span data-i18n="customTitle">Добавить свой продукт</span></div>
             <div class="form-group">
                 <label data-i18n="customName">Название продукта</label>
-                <input type="text" id="custName" placeholder="Напр. Паста с тунцом">
+                <input type="text" id="custName" data-i18n-placeholder="customNamePlaceholder" placeholder="Напр. Паста с тунцом">
             </div>
             <div class="form-row">
                 <div class="form-group">
@@ -455,6 +455,7 @@
             weightLabelText: "Вес (г)",
             customTitle: "Добавить свой продукт", customName: "Название продукта", customKcal: "Ккал на 100г",
             customPortion: "Станд. порция (г)", customProt: "Белки", customFat: "Жиры", customCarb: "Угли",
+            customNamePlaceholder: "Напр. Паста с тунцом",
             saveCustomBtn: "Сохранить в базу", profileTitle: "Параметры тела и образ жизни",
             lblName: "Имя", lblAge: "Возраст", lblHeight: "Рост (см)", lblWeight: "Вес (кг)",
             lblActivity: "Образ жизни и активность", lblGoal: "Вектор формы (Цель)", lblProtRatio: "Норма белка",
@@ -478,6 +479,7 @@
             weightLabelText: "Weight (g)",
             customTitle: "Add Custom Food", customName: "Food Name", customKcal: "Kcal per 100g",
             customPortion: "Standard portion (g)", customProt: "Protein", customFat: "Fat", customCarb: "Carbs",
+            customNamePlaceholder: "Ex. Tuna pasta",
             saveCustomBtn: "Save to Database", profileTitle: "Body Specs & Lifestyle",
             lblName: "Name", lblAge: "Age", lblHeight: "Height (cm)", lblWeight: "Weight (kg)",
             lblActivity: "Lifestyle & Activity", lblGoal: "Fitness Goal", lblProtRatio: "Protein Ratio",
@@ -501,6 +503,7 @@
             weightLabelText: "ഭാരം (ഗ്രാം)",
             customTitle: "പുതിയ ഭക്ഷണം ചേർക്കുക", customName: "ഭക്ഷണത്തിന്റെ പേര്", customKcal: "100 ഗ്രാമിന് കലോറി",
             customPortion: "അളവ് (ഗ്രാം)", customProt: "പ്രോട്ടീൻ", customFat: "കൊഴുപ്പ്", customCarb: "കാർബ്സ്",
+            customNamePlaceholder: "ഉദാഹരണത്തിന്: ട്യൂണ പാസ്ത",
             saveCustomBtn: "സേവ് ചെയ്യുക", profileTitle: "ശരീര വിവരങ്ങൾ",
             lblName: "പേര്", lblAge: "പ്രായം", lblHeight: "ഉയരം (cm)", lblWeight: "ഭാരം (kg)",
             lblActivity: "ജീവിതശൈലി", lblGoal: "ലക്ഷ്യം", lblProtRatio: "പ്രോട്ടീൻ അനുപാതം",
@@ -608,14 +611,14 @@
             goal: parseFloat(document.getElementById('goal').value) || -0.10,
             protRatio: parseFloat(document.getElementById('protRatio').value) || 1.8
         };
-        safeSet('vd_profile_v8', profile);
+        safeSet('vd_profile_v9', profile);
         calculateTargets();
         renderPassport();
         renderLog();
     }
 
     function calculateTargets() {
-        const profile = safeGet('vd_profile_v8', { age: 34, height: 178, weight: 68, activity: 1.375, goal: -0.10, protRatio: 1.8 });
+        const profile = safeGet('vd_profile_v9', { age: 34, height: 178, weight: 68, activity: 1.375, goal: -0.10, protRatio: 1.8 });
         const bmr = (10 * profile.weight) + (6.25 * profile.height) - (5 * profile.age) + 5;
         const targetKcal = Math.round(bmr * profile.activity * (1 + profile.goal));
         const targetProt = Math.round(profile.weight * profile.protRatio);
@@ -631,7 +634,7 @@
     }
 
     function renderPassport() {
-        const profile = safeGet('vd_profile_v8', { name: 'Dmitrii', goal: -0.10, weight: 68, protRatio: 1.8 });
+        const profile = safeGet('vd_profile_v9', { name: 'Dmitrii', goal: -0.10, weight: 68, protRatio: 1.8 });
         document.getElementById('pName').textContent = profile.name + ' & Viji';
         const goalsMap = {
             ru: { "-0.18": "Сушка (-18%)", "-0.10": "Рекомпозиция (-10%)", "0": "Поддержка (0%)", "0.12": "Набор массы (+12%)" },
@@ -720,9 +723,9 @@
             c: parseFloat(document.getElementById('custCarb').value) || 0,
             unitW: unitW, unitName: 'portion (' + unitW + 'g)'
         };
-        const savedCustom = safeGet('vd_custom_v8', []);
+        const savedCustom = safeGet('vd_custom_v9', []);
         savedCustom.push(newFood);
-        safeSet('vd_custom_v8', savedCustom);
+        safeSet('vd_custom_v9', savedCustom);
         foodsDB.unshift(newFood);
         populateFoodSelect();
         document.getElementById('custName').value = '';
@@ -730,7 +733,7 @@
     }
 
     function saveSetAndRender() {
-        safeSet('vd_log_v8', dailyLog);
+        safeSet('vd_log_v9', dailyLog);
         renderLog();
     }
 
@@ -781,10 +784,10 @@
     }
 
     function init() {
-        const savedCustom = safeGet('vd_custom_v8', []);
+        const savedCustom = safeGet('vd_custom_v9', []);
         foodsDB = savedCustom.concat(RAW_DB.map(r => ({ id: r[0], cat: r[1], name: r[2], kcal: r[3], p: r[4], f: r[5], c: r[6], unitW: r[7], unitName: r[8] })));
         
-        const savedProfile = safeGet('vd_profile_v8', null);
+        const savedProfile = safeGet('vd_profile_v9', null);
         if (savedProfile) {
             document.getElementById('userName').value = savedProfile.name || 'Dmitrii';
             document.getElementById('age').value = savedProfile.age;
@@ -794,7 +797,7 @@
             document.getElementById('goal').value = savedProfile.goal;
             document.getElementById('protRatio').value = savedProfile.protRatio;
         }
-        dailyLog = safeGet('vd_log_v8', []);
+        dailyLog = safeGet('vd_log_v9', []);
         setLang('ru');
         populateFoodSelect();
         calculateTargets();
