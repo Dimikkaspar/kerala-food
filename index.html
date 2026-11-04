@@ -1,37 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Malayalam Learning App</title>
-    <link rel="stylesheet" href="styles.css">
-    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Malayalam Learning</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-    <div class="app-container">
-        <header class="app-header">
-            <h1>Malayalam Learning</h1>
-            <p>Учите малаялам с удовольствием!</p>
-        </header>
+<div id="app">
 
-        <div class="language-selector">
-            <button class="lang-btn" data-lang="ru">Русский</button>
-            <button class="lang-btn" data-lang="en">English</button>
-            <button class="lang-btn" data-lang="ml">മലയാളം</button>
-        </div>
-
-        <main class="app-main">
-            <div id="content" class="content-area">
-                <!-- Контент будет загружаться здесь -->
-            </div>
-        </main>
-
-        <footer class="app-footer">
-            <button id="start-btn" class="primary-btn">Начать учиться</button>
-            <button id="next-btn" class="secondary-btn">Следующая фраза</button>
-        </footer>
+  <!-- HOME SCREEN -->
+  <div id="screen-home" class="screen active">
+    <div class="stats-bar">
+      <div class="stat"><span class="stat-icon">🔥</span><span id="streak-val">0</span></div>
+      <div class="stat"><span class="stat-icon">⭐</span><span id="xp-val">0</span></div>
+      <div class="stat"><span class="stat-icon">❤️</span><span id="hearts-home">5</span></div>
+      <button class="lang-toggle" id="lang-toggle" onclick="toggleLang()">RU</button>
     </div>
 
-    <script src="script.js"></script>
+    <div class="home-hero">
+      <div class="hero-emoji">🐘</div>
+      <h1 class="hero-title">Malayalam</h1>
+      <p class="hero-sub" data-i="heroSub">Учи малаялам играя</p>
+    </div>
+
+    <div class="categories-grid" id="categories-grid"></div>
+  </div>
+
+  <!-- LESSON SCREEN -->
+  <div id="screen-lesson" class="screen">
+    <div class="lesson-header">
+      <button class="back-btn" onclick="goHome()">✕</button>
+      <div class="progress-wrap">
+        <div class="progress-bar"><div class="progress-fill" id="lesson-progress"></div></div>
+        <span class="progress-text" id="progress-text">0/10</span>
+      </div>
+      <div class="hearts-display" id="hearts-display"></div>
+    </div>
+
+    <div class="question-area" id="question-area"></div>
+
+    <div class="lesson-footer">
+      <div class="feedback-bar" id="feedback-bar"></div>
+      <button class="check-btn" id="check-btn" onclick="checkAnswer()" disabled data-i="checkBtn">ПРОВЕРИТЬ</button>
+    </div>
+  </div>
+
+  <!-- RESULTS SCREEN -->
+  <div id="screen-results" class="screen">
+    <div class="results-content">
+      <div class="results-emoji">🎉</div>
+      <h2 class="results-title" data-i="resultsTitle">Урок завершён!</h2>
+      <div class="results-stats">
+        <div class="result-stat">
+          <span class="result-label">XP</span>
+          <span class="result-value" id="result-xp">+0</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-label" data-i="accuracy">Точность</span>
+          <span class="result-value" id="result-accuracy">0%</span>
+        </div>
+        <div class="result-stat">
+          <span class="result-label" data-i="correct">Верно</span>
+          <span class="result-value" id="result-correct">0/10</span>
+        </div>
+      </div>
+      <div class="streak-badge" id="streak-badge">🔥 <span data-i="streakDays">Дней подряд</span>: <strong id="result-streak">0</strong></div>
+      <button class="check-btn" onclick="goHome()" data-i="continueBtn">ПРОДОЛЖИТЬ</button>
+    </div>
+  </div>
+
+</div>
+<script src="script.js"></script>
 </body>
 </html>
