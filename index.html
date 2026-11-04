@@ -1,77 +1,45 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Malayalam Learning</title>
-  <script src="https://telegram.org/js/telegram-web-app.js"></script>
-  <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Malayalam Neo — учить малаялам</title>
+  <meta name="description" content="Малаялам по фразам и манглишу: 255 уроков, 2500 фраз, озвучка и транскрипция.">
+  <style>
+    :root { color-scheme: light; }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; min-height: 100dvh; display: grid; place-items: center;
+      padding: 24px; background: #f6f1e4; color: #223448;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    }
+    main { width: min(460px, 100%); text-align: center; }
+    .mark {
+      width: 84px; height: 84px; margin: 0 auto 18px; display: grid; place-items: center;
+      border-radius: 24px; background: #223448; color: #f6f1e4;
+      font-size: 44px; line-height: 1;
+    }
+    h1 { margin: 0 0 10px; font-size: clamp(30px, 8vw, 42px); letter-spacing: -.03em; }
+    p { margin: 0 0 22px; color: #5c6b6f; line-height: 1.55; }
+    .start {
+      display: block; padding: 16px 22px; border-radius: 16px; text-decoration: none;
+      background: #58bd7b; color: #fff; font-weight: 800; font-size: 18px;
+      box-shadow: 0 5px 0 #36965c;
+    }
+    .start:active { transform: translateY(2px); box-shadow: 0 3px 0 #36965c; }
+    .links { margin-top: 18px; font-size: 14px; }
+    .links a { color: #287e9a; }
+    .small { margin-top: 26px; font-size: 12.5px; color: #8a9799; }
+  </style>
 </head>
 <body>
-<div id="app">
-
-  <!-- HOME SCREEN -->
-  <div id="screen-home" class="screen active">
-    <div class="stats-bar">
-      <div class="stat"><span class="stat-icon">🔥</span><span id="streak-val">0</span></div>
-      <div class="stat"><span class="stat-icon">⭐</span><span id="xp-val">0</span></div>
-      <div class="stat"><span class="stat-icon">❤️</span><span id="hearts-home">5</span></div>
-      <button class="lang-toggle" id="lang-toggle" onclick="toggleLang()">RU</button>
-    </div>
-
-    <div class="home-hero">
-      <div class="hero-emoji">🐘</div>
-      <h1 class="hero-title">Malayalam</h1>
-      <p class="hero-sub" data-i="heroSub">Учи малаялам играя</p>
-    </div>
-
-    <div class="categories-grid" id="categories-grid"></div>
-  </div>
-
-  <!-- LESSON SCREEN -->
-  <div id="screen-lesson" class="screen">
-    <div class="lesson-header">
-      <button class="back-btn" onclick="goHome()">✕</button>
-      <div class="progress-wrap">
-        <div class="progress-bar"><div class="progress-fill" id="lesson-progress"></div></div>
-        <span class="progress-text" id="progress-text">0/10</span>
-      </div>
-      <div class="hearts-display" id="hearts-display"></div>
-    </div>
-
-    <div class="question-area" id="question-area"></div>
-
-    <div class="lesson-footer">
-      <div class="feedback-bar" id="feedback-bar"></div>
-      <button class="check-btn" id="check-btn" onclick="checkAnswer()" disabled data-i="checkBtn">ПРОВЕРИТЬ</button>
-    </div>
-  </div>
-
-  <!-- RESULTS SCREEN -->
-  <div id="screen-results" class="screen">
-    <div class="results-content">
-      <div class="results-emoji">🎉</div>
-      <h2 class="results-title" data-i="resultsTitle">Урок завершён!</h2>
-      <div class="results-stats">
-        <div class="result-stat">
-          <span class="result-label">XP</span>
-          <span class="result-value" id="result-xp">+0</span>
-        </div>
-        <div class="result-stat">
-          <span class="result-label" data-i="accuracy">Точность</span>
-          <span class="result-value" id="result-accuracy">0%</span>
-        </div>
-        <div class="result-stat">
-          <span class="result-label" data-i="correct">Верно</span>
-          <span class="result-value" id="result-correct">0/10</span>
-        </div>
-      </div>
-      <div class="streak-badge" id="streak-badge">🔥 <span data-i="streakDays">Дней подряд</span>: <strong id="result-streak">0</strong></div>
-      <button class="check-btn" onclick="goHome()" data-i="continueBtn">ПРОДОЛЖИТЬ</button>
-    </div>
-  </div>
-
-</div>
-<script src="script.js"></script>
+  <main>
+    <div class="mark" aria-hidden="true">അ</div>
+    <h1>Malayalam Neo</h1>
+    <p>255 уроков, 2500 фраз, манглиш, озвучка и транскрипция.<br>Приложение живёт на постоянном адресе.</p>
+    <a class="start" href="https://malayalam-neo.vercel.app">Начать учиться →</a>
+    <p class="links">Telegram: <a href="https://t.me/KeralaFood_bot">@KeralaFood_bot</a></p>
+    <p class="small">GitHub Pages оставлен как короткая ссылка на приложение.</p>
+  </main>
 </body>
 </html>
