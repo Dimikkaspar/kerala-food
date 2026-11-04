@@ -65,7 +65,14 @@ function haptic(type) {
 
 /* ── Init ── */
 async function init() {
-  if(tg) { tg.ready(); tg.expand(); }
+  if(tg) {
+    tg.ready();
+    tg.expand();
+    try {
+      if(tg.setHeaderColor) tg.setHeaderColor('#131F24');
+      if(tg.setBackgroundColor) tg.setBackgroundColor('#131F24');
+    } catch(e) {}
+  }
   checkStreak();
   await loadPhrases();
   applyLang();
