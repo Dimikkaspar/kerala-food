@@ -1,0 +1,1014 @@
+<!doctype html>
+<!--
+  Malayalam Neo · «бабл» — один самодостаточный HTML-файл.
+
+  Его можно открыть как обычную страницу, как Telegram Mini App
+  (web_app-кнопка) и — когда Telegram откроет публичный API —
+  отправить как HTMLBubble прямо в чат. Ни одного внешнего скрипта
+  или сборщика: только HTML, CSS и JS в этом файле.
+-->
+<html lang="ru">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover, maximum-scale=1"
+    />
+    <title>Malayalam Neo · мини-урок</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Noto+Sans+Malayalam:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      :root {
+        --bg: #fbf6ec;
+        --paper: #fffdf7;
+        --ink: #182031;
+        --ink-2: #4b5568;
+        --ink-3: #7b8496;
+        --line: #e6ddcb;
+        --palm: #3f7d4e;
+        --palm-soft: #e7f1e7;
+        --turmeric: #c9852b;
+        --turmeric-soft: #fbefd8;
+        --backwater: #2f6f8f;
+        --danger: #b4453a;
+        --danger-soft: #fbe9e6;
+        --ml: "Noto Sans Malayalam", "Noto Serif Malayalam", system-ui, sans-serif;
+        --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        --radius: 18px;
+        --tap: 48px;
+      }
+
+      :root[data-theme="dark"] {
+        --bg: #11161d;
+        --paper: #171e27;
+        --ink: #f2f5f9;
+        --ink-2: #b6c0cf;
+        --ink-3: #8a94a6;
+        --line: #2a3441;
+        --palm: #6cae7b;
+        --palm-soft: #1d2c22;
+        --turmeric: #e0a44f;
+        --turmeric-soft: #2f2517;
+        --backwater: #6aa8c4;
+        --danger: #e0786c;
+        --danger-soft: #33201e;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body {
+        margin: 0;
+        height: 100%;
+      }
+
+      body {
+        background: var(--bg);
+        color: var(--ink);
+        font-family: var(--sans);
+        font-size: 16px;
+        line-height: 1.45;
+        -webkit-font-smoothing: antialiased;
+        overscroll-behavior: none;
+      }
+
+      button {
+        font: inherit;
+        color: inherit;
+        -webkit-tap-highlight-color: transparent;
+      }
+
+      .bubble {
+        display: flex;
+        flex-direction: column;
+        height: 100dvh;
+        max-height: 100dvh;
+        background: var(--bg);
+      }
+
+      .top {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 14px 18px 8px;
+      }
+
+      .brand {
+        display: flex;
+        align-items: center;
+        gap: 9px;
+        min-width: 0;
+      }
+
+      .brand__mark {
+        display: grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 11px;
+        background: var(--palm);
+        color: #fff;
+        font-family: var(--ml);
+        font-size: 20px;
+        line-height: 1;
+        flex: none;
+      }
+
+      .brand__text {
+        font-size: 14px;
+        font-weight: 700;
+        letter-spacing: 0.02em;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+
+      .lang {
+        display: flex;
+        padding: 3px;
+        border: 1px solid var(--line);
+        border-radius: 999px;
+        background: var(--paper);
+        flex: none;
+      }
+
+      .lang button {
+        min-width: 44px;
+        min-height: 34px;
+        padding: 0 12px;
+        border: 0;
+        border-radius: 999px;
+        background: transparent;
+        color: var(--ink-3);
+        font-size: 13px;
+        font-weight: 700;
+        cursor: pointer;
+      }
+
+      .lang button[aria-pressed="true"] {
+        background: var(--palm);
+        color: #fff;
+      }
+
+      .stage {
+        flex: 1;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 10px 18px 18px;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .kicker {
+        margin: 0 0 10px;
+        color: var(--ink-3);
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.12em;
+        text-transform: uppercase;
+      }
+
+      .card {
+        padding: 22px 20px;
+        border: 1px solid var(--line);
+        border-radius: var(--radius);
+        background: var(--paper);
+        box-shadow: 0 1px 0 rgba(24, 32, 49, 0.04);
+      }
+
+      .phrase {
+        margin: 0;
+        font-family: var(--ml);
+        font-size: clamp(30px, 9vw, 42px);
+        font-weight: 600;
+        line-height: 1.3;
+        text-align: center;
+        overflow-wrap: anywhere;
+      }
+
+      .manglish {
+        margin: 8px 0 0;
+        color: var(--ink-3);
+        font-size: 15px;
+        text-align: center;
+      }
+
+      .translation {
+        margin: 14px 0 0;
+        padding-top: 14px;
+        border-top: 1px dashed var(--line);
+        color: var(--ink);
+        font-size: 19px;
+        font-weight: 600;
+        text-align: center;
+      }
+
+      .speak {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        width: 100%;
+        min-height: 46px;
+        margin-top: 16px;
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        background: var(--bg);
+        color: var(--ink-2);
+        font-size: 15px;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .speak:active {
+        transform: scale(0.99);
+      }
+
+      .dots {
+        display: flex;
+        justify-content: center;
+        gap: 7px;
+        margin-top: 16px;
+      }
+
+      .dots span {
+        width: 7px;
+        height: 7px;
+        border-radius: 50%;
+        background: var(--line);
+      }
+
+      .dots span.is-on {
+        background: var(--palm);
+      }
+
+      .q {
+        margin: 0 0 14px;
+        font-size: 17px;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+
+      .prompt {
+        margin: 0 0 18px;
+        font-family: var(--ml);
+        font-size: clamp(26px, 8vw, 36px);
+        font-weight: 600;
+        line-height: 1.32;
+        text-align: center;
+        overflow-wrap: anywhere;
+      }
+
+      .options {
+        display: grid;
+        gap: 10px;
+      }
+
+      .option {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        min-height: 54px;
+        padding: 12px 15px;
+        border: 1.5px solid var(--line);
+        border-radius: 14px;
+        background: var(--paper);
+        text-align: left;
+        font-size: 15px;
+        font-weight: 500;
+        line-height: 1.35;
+        cursor: pointer;
+        transition: border-color 0.15s, background 0.15s;
+      }
+
+      .option__key {
+        display: grid;
+        place-items: center;
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: var(--bg);
+        color: var(--ink-3);
+        font-size: 12px;
+        font-weight: 700;
+        flex: none;
+      }
+
+      .option.is-correct {
+        border-color: var(--palm);
+        background: var(--palm-soft);
+      }
+
+      .option.is-correct .option__key {
+        background: var(--palm);
+        color: #fff;
+      }
+
+      .option.is-wrong {
+        border-color: var(--danger);
+        background: var(--danger-soft);
+      }
+
+      .option.is-wrong .option__key {
+        background: var(--danger);
+        color: #fff;
+      }
+
+      .option:disabled {
+        cursor: default;
+      }
+
+      .option:disabled:not(.is-correct):not(.is-wrong) {
+        opacity: 0.55;
+      }
+
+      .tray {
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        gap: 8px;
+        min-height: 76px;
+        padding: 12px;
+        border: 1.5px dashed var(--line);
+        border-radius: 14px;
+        background: var(--paper);
+      }
+
+      .tray:empty::after {
+        content: attr(data-empty);
+        color: var(--ink-3);
+        font-size: 14px;
+      }
+
+      .bank {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-top: 12px;
+      }
+
+      .word {
+        min-height: 44px;
+        padding: 8px 14px;
+        border: 1.5px solid var(--line);
+        border-radius: 11px;
+        background: var(--paper);
+        font-family: var(--ml);
+        font-size: 19px;
+        line-height: 1.35;
+        cursor: pointer;
+      }
+
+      .word.is-picked {
+        border-color: var(--palm);
+        background: var(--palm-soft);
+      }
+
+      .word:active {
+        transform: translateY(1px);
+      }
+
+      .word:disabled {
+        cursor: default;
+        opacity: 0.5;
+      }
+
+      .verdict {
+        margin-top: 14px;
+        padding: 12px 14px;
+        border-radius: 12px;
+        background: var(--palm-soft);
+        color: var(--palm);
+        font-size: 14px;
+        font-weight: 600;
+        line-height: 1.4;
+      }
+
+      .verdict.is-bad {
+        background: var(--danger-soft);
+        color: var(--danger);
+      }
+
+      .result {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        height: 100%;
+        min-height: 260px;
+        text-align: center;
+      }
+
+      .result__score {
+        font-size: 64px;
+        font-weight: 800;
+        line-height: 1;
+        color: var(--palm);
+      }
+
+      .result__score small {
+        font-size: 24px;
+        color: var(--ink-3);
+      }
+
+      .result__title {
+        margin: 14px 0 6px;
+        font-size: 21px;
+        font-weight: 700;
+      }
+
+      .result__note {
+        margin: 0;
+        color: var(--ink-2);
+        font-size: 15px;
+      }
+
+      .result__review {
+        width: 100%;
+        margin-top: 22px;
+        text-align: left;
+      }
+
+      .result__review .phrase {
+        font-size: 22px;
+        text-align: left;
+      }
+
+      .result__review .translation {
+        padding-top: 8px;
+        border: 0;
+        font-size: 15px;
+        text-align: left;
+        color: var(--ink-2);
+      }
+
+      .result__row + .result__row {
+        margin-top: 12px;
+        padding-top: 12px;
+        border-top: 1px solid var(--line);
+      }
+
+      .bottom {
+        flex: none;
+        padding: 10px 18px calc(14px + env(safe-area-inset-bottom));
+        border-top: 1px solid var(--line);
+        background: var(--bg);
+      }
+
+      .btn {
+        width: 100%;
+        min-height: var(--tap);
+        padding: 0 18px;
+        border: 0;
+        border-radius: 14px;
+        background: var(--palm);
+        color: #fff;
+        font-size: 16px;
+        font-weight: 700;
+        cursor: pointer;
+        box-shadow: 0 3px 0 rgba(24, 32, 49, 0.16);
+      }
+
+      .btn:active {
+        transform: translateY(2px);
+        box-shadow: none;
+      }
+
+      .btn:disabled {
+        opacity: 0.45;
+        box-shadow: none;
+        cursor: default;
+      }
+
+      .btn--ghost {
+        margin-top: 8px;
+        background: transparent;
+        color: var(--ink-2);
+        box-shadow: none;
+        border: 1.5px solid var(--line);
+      }
+
+      .progress {
+        height: 4px;
+        margin-top: 10px;
+        border-radius: 999px;
+        background: var(--line);
+        overflow: hidden;
+      }
+
+      .progress span {
+        display: block;
+        height: 100%;
+        border-radius: 999px;
+        background: var(--palm);
+        transition: width 0.25s ease;
+      }
+
+      .toast {
+        position: fixed;
+        left: 50%;
+        bottom: calc(88px + env(safe-area-inset-bottom));
+        transform: translateX(-50%);
+        padding: 10px 16px;
+        border-radius: 999px;
+        background: var(--ink);
+        color: var(--bg);
+        font-size: 14px;
+        font-weight: 600;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.2s;
+        white-space: nowrap;
+      }
+
+      .toast.is-on {
+        opacity: 1;
+      }
+
+      @media (min-width: 520px) {
+        .bubble {
+          max-width: 420px;
+          margin: 0 auto;
+          border-left: 1px solid var(--line);
+          border-right: 1px solid var(--line);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="bubble">
+      <header class="top">
+        <div class="brand">
+          <span class="brand__mark" aria-hidden="true">അ</span>
+          <span class="brand__text">Malayalam Neo</span>
+        </div>
+        <div class="lang" role="group" aria-label="Язык интерфейса">
+          <button type="button" data-lang="ru" aria-pressed="true">RU</button>
+          <button type="button" data-lang="en" aria-pressed="false">EN</button>
+        </div>
+      </header>
+
+      <main class="stage" id="stage"></main>
+      <footer class="bottom" id="bottom"></footer>
+    </div>
+
+    <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+    <script>
+      (() => {
+        "use strict";
+
+        const PHRASES = [
+          { ml: "നമുക്ക് പോകാം!", manglish: "Namukk pokam!", ru: "Пойдём!", en: "Let's go!" },
+          { ml: "എനിക്ക് വിശക്കുന്നു", manglish: "Enikk vishakunnu", ru: "Я голоден", en: "I am hungry" },
+          {
+            ml: "എനിക്ക് കുറച്ച് വെള്ളം തരൂ",
+            manglish: "Enikk kurach vellam tharoo",
+            ru: "Принеси мне немного воды",
+            en: "Get me some water",
+          },
+          {
+            ml: "അകത്തേക്ക് വരാമോ?",
+            manglish: "Akatheek varamo?",
+            ru: "Можно мне войти?",
+            en: "May I come in?",
+          },
+          { ml: "എന്നോട് ക്ഷമിക്കൂ", manglish: "Ennod kshamikkoo", ru: "Простите меня", en: "Pardon me" },
+        ];
+
+        const TEXT = {
+          ru: {
+            phraseOf: (n) => `Фраза ${n} из 5`,
+            listen: "Послушать",
+            next: "Дальше →",
+            start: "Начать задания →",
+            recognize: (n) => `Узнайте фразу · ${n} из 10`,
+            meaning: "Что это значит?",
+            assemble: (n) => `Соберите фразу · ${n} из 10`,
+            build: "Соберите перевод на малаялам",
+            trayEmpty: "Нажимайте слова внизу",
+            check: "Проверить",
+            correct: "Верно!",
+            wrong: "Пока нет. Правильный порядок:",
+            wrongAnswer: "Пока нет. Правильный ответ:",
+            again: "Ещё раз",
+            openApp: "Открыть большое приложение",
+            review: "Все фразы урока",
+            doneTitle: (score) =>
+              score >= 8 ? "Отличная работа!" : score >= 5 ? "Уже неплохо!" : "Повторим ещё раз?",
+            doneNote: (score) =>
+              score >= 8
+                ? "Вы уверенно узнаёте эти фразы."
+                : score >= 5
+                  ? "Ещё один круг — и фразы запомнятся."
+                  : "Ничего страшного: повторите карточки и попробуйте снова.",
+            scoreOf: "из 10",
+          },
+          en: {
+            phraseOf: (n) => `Phrase ${n} of 5`,
+            listen: "Listen",
+            next: "Next →",
+            start: "Start the tasks →",
+            recognize: (n) => `Recognise the phrase · ${n} of 10`,
+            meaning: "What does it mean?",
+            assemble: (n) => `Build the phrase · ${n} of 10`,
+            build: "Build it in Malayalam",
+            trayEmpty: "Tap the words below",
+            check: "Check",
+            correct: "Correct!",
+            wrong: "Not yet. The right order:",
+            wrongAnswer: "Not yet. The correct answer:",
+            again: "Again",
+            openApp: "Open the full app",
+            review: "All phrases from the lesson",
+            doneTitle: (score) =>
+              score >= 8 ? "Excellent work!" : score >= 5 ? "Getting there!" : "One more round?",
+            doneNote: (score) =>
+              score >= 8
+                ? "You recognise these phrases with confidence."
+                : score >= 5
+                  ? "One more round and they will stick."
+                  : "No worries: review the cards and try again.",
+            scoreOf: "of 10",
+          },
+        };
+
+        const TOTAL_TASKS = 10;
+        const APP_URL = "https://malayalam-neo.vercel.app";
+
+        const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+        if (tg) {
+          try {
+            tg.ready();
+            tg.expand();
+            tg.BackButton && tg.BackButton.hide();
+            if (tg.colorScheme === "dark") document.documentElement.dataset.theme = "dark";
+          } catch (error) {
+            /* Вне Telegram SDK может быть неполным — это нормально. */
+          }
+        }
+
+        const state = {
+          lang: "ru",
+          card: 0,
+          task: 0,
+          score: 0,
+          answered: false,
+          choice: null,
+          tray: [],
+          bank: [],
+          toastTimer: 0,
+        };
+
+        const stage = document.getElementById("stage");
+        const bottom = document.getElementById("bottom");
+        const toast = document.getElementById("toast");
+
+        const ui = () => TEXT[state.lang];
+        const escapeHtml = (value) =>
+          String(value).replace(/[&<>"']/g, (ch) => ({
+            "&": "&amp;",
+            "<": "&lt;",
+            ">": "&gt;",
+            '"': "&quot;",
+            "'": "&#39;",
+          })[ch]);
+
+        function haptic(style) {
+          try {
+            if (style === "success" || style === "error") tg && tg.HapticFeedback.notificationOccurred(style);
+            else tg && tg.HapticFeedback.impactOccurred(style || "light");
+          } catch (error) {
+            /* тихо */
+          }
+        }
+
+        function showToast(message) {
+          toast.textContent = message;
+          toast.classList.add("is-on");
+          clearTimeout(state.toastTimer);
+          state.toastTimer = setTimeout(() => toast.classList.remove("is-on"), 1600);
+        }
+
+        function speak(text) {
+          haptic("light");
+          const audio = new Audio(
+            `${APP_URL}/api/tts?text=${encodeURIComponent(text)}&lang=ml`,
+          );
+          audio.play().catch(() => {
+            if ("speechSynthesis" in window) {
+              try {
+                window.speechSynthesis.cancel();
+                const u = new SpeechSynthesisUtterance(text);
+                u.lang = "ml-IN";
+                u.rate = 0.85;
+                window.speechSynthesis.speak(u);
+                return;
+              } catch (e) {}
+            }
+            showToast(state.lang === "ru" ? "Звук недоступен" : "Audio unavailable");
+          });
+        }
+
+        function shuffle(list) {
+          const out = list.slice();
+          for (let i = out.length - 1; i > 0; i -= 1) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [out[i], out[j]] = [out[j], out[i]];
+          }
+          return out;
+        }
+
+        function translation(phrase) {
+          return state.lang === "ru" ? phrase.ru : phrase.en;
+        }
+
+        function setProgress(value) {
+          return `<div class="progress" aria-hidden="true"><span style="width:${value}%"></span></div>`;
+        }
+
+        function dots(index) {
+          return `<div class="dots" aria-hidden="true">${PHRASES.map(
+            (_, i) => `<span class="${i <= index ? "is-on" : ""}"></span>`,
+          ).join("")}</div>`;
+        }
+
+        function render() {
+          if (state.card < PHRASES.length) return renderCard();
+          if (state.task < TOTAL_TASKS) return renderTask();
+          return renderResult();
+        }
+
+        function renderCard() {
+          const phrase = PHRASES[state.card];
+          const last = state.card === PHRASES.length - 1;
+          stage.innerHTML = `
+            <p class="kicker">${escapeHtml(ui().phraseOf(state.card + 1))}</p>
+            <div class="card">
+              <p class="phrase">${escapeHtml(phrase.ml)}</p>
+              <p class="manglish">${escapeHtml(phrase.manglish)}</p>
+              <p class="translation">${escapeHtml(translation(phrase))}</p>
+              <button class="speak" type="button" data-action="speak">🔊 ${escapeHtml(ui().listen)}</button>
+              ${dots(state.card)}
+            </div>
+          `;
+          bottom.innerHTML = `<button class="btn" type="button" data-action="next-card">${
+            last ? escapeHtml(ui().start) : escapeHtml(ui().next)
+          }</button>`;
+        }
+
+        function makeQuestion() {
+          const phrase = PHRASES[state.task % PHRASES.length];
+          const others = shuffle(
+            PHRASES.filter((item) => item !== phrase).map((item) => translation(item)),
+          ).slice(0, 3);
+          return { phrase, options: shuffle([translation(phrase), ...others]) };
+        }
+
+        function renderTask() {
+          const question = makeQuestion();
+          const indexInPass = state.task % PHRASES.length;
+          const recognition = state.task < PHRASES.length;
+
+          if (recognition) {
+            stage.innerHTML = `
+              <p class="kicker">${escapeHtml(ui().recognize(state.task + 1))}</p>
+              <p class="prompt">${escapeHtml(question.phrase.ml)}</p>
+              <p class="q">${escapeHtml(ui().meaning)}</p>
+              <div class="options" data-question="${escapeHtml(question.phrase.ml)}">
+                ${question.options
+                  .map(
+                    (option, i) => `
+                  <button class="option" type="button" data-action="answer" data-value="${escapeHtml(option)}">
+                    <span class="option__key">${i + 1}</span>
+                    <span>${escapeHtml(option)}</span>
+                  </button>`,
+                  )
+                  .join("")}
+              </div>
+            `;
+          } else {
+            const words = question.phrase.ml.split(/\s+/);
+            state.bank = shuffle(words);
+            state.tray = [];
+            stage.innerHTML = `
+              <p class="kicker">${escapeHtml(ui().assemble(state.task + 1))}</p>
+              <p class="q">${escapeHtml(ui().build)}</p>
+              <div class="card">
+                <p class="translation" style="border:0;padding:0;margin:0">${escapeHtml(translation(question.phrase))}</p>
+                <div class="tray" id="tray" data-empty="${escapeHtml(ui().trayEmpty)}"></div>
+                <div class="bank" id="bank"></div>
+              </div>
+            `;
+          }
+
+          bottom.innerHTML = `
+            ${setProgress((state.task / TOTAL_TASKS) * 100)}
+            <button class="btn" type="button" data-action="next-task" ${
+              recognition ? "disabled" : ""
+            }>${escapeHtml(ui().next)}</button>
+          `;
+
+          if (!recognition) renderBank();
+        }
+
+        function renderBank() {
+          const tray = document.getElementById("tray");
+          const bank = document.getElementById("bank");
+          if (!tray || !bank) return;
+
+          tray.innerHTML = state.tray
+            .map(
+              (word, index) =>
+                `<button class="word is-picked" type="button" data-action="unpick" data-index="${index}">${escapeHtml(word)}</button>`,
+            )
+            .join("");
+
+          bank.innerHTML = state.bank
+            .map(
+              (word, index) =>
+                `<button class="word" type="button" data-action="pick" data-index="${index}" ${
+                  state.tray.includes(word) ? "disabled" : ""
+                }>${escapeHtml(word)}</button>`,
+            )
+            .join("");
+
+          const check = bottom.querySelector('[data-action="next-task"]');
+          if (check && !state.answered) {
+            check.textContent = ui().check;
+            check.disabled = state.tray.length !== state.bank.length;
+          }
+        }
+
+        function renderVerdict(ok, correctText, wrongLabel) {
+          const box = document.createElement("div");
+          box.className = `verdict${ok ? "" : " is-bad"}`;
+          box.innerHTML = ok
+            ? escapeHtml(ui().correct)
+            : `${escapeHtml(wrongLabel)}<br><strong>${escapeHtml(correctText)}</strong>`;
+          stage.appendChild(box);
+        }
+
+        function answer(button) {
+          if (state.answered) return;
+          state.answered = true;
+          const value = button.dataset.value;
+          const phrase = PHRASES[state.task % PHRASES.length];
+          const ok = value === translation(phrase);
+
+          stage.querySelectorAll(".option").forEach((option) => {
+            option.disabled = true;
+            if (option.dataset.value === translation(phrase)) option.classList.add("is-correct");
+          });
+          if (!ok) button.classList.add("is-wrong");
+
+          if (ok) state.score += 1;
+          haptic(ok ? "success" : "error");
+          renderVerdict(ok, translation(phrase), ui().wrongAnswer);
+
+          const next = bottom.querySelector('[data-action="next-task"]');
+          if (next) {
+            next.disabled = false;
+            next.textContent = ui().next;
+          }
+        }
+
+        function checkAssembly() {
+          const phrase = PHRASES[state.task % PHRASES.length];
+          const built = state.tray.join(" ");
+          const ok = built === phrase.ml;
+          state.answered = true;
+          if (ok) state.score += 1;
+          haptic(ok ? "success" : "error");
+
+          stage.querySelectorAll(".word").forEach((word) => {
+            word.disabled = true;
+          });
+          renderVerdict(ok, phrase.ml, ui().wrong);
+
+          const next = bottom.querySelector('[data-action="next-task"]');
+          if (next) {
+            next.disabled = false;
+            next.textContent = ui().next;
+          }
+        }
+
+        function nextTask() {
+          if (!state.answered) return checkAssembly();
+          state.task += 1;
+          state.answered = false;
+          render();
+        }
+
+        function renderResult() {
+          const review = PHRASES.map(
+            (phrase) => `
+              <div class="result__row">
+                <p class="phrase">${escapeHtml(phrase.ml)}</p>
+                <p class="translation">${escapeHtml(translation(phrase))}</p>
+              </div>`,
+          ).join("");
+
+          stage.innerHTML = `
+            <div class="result">
+              <div class="result__score">${state.score}<small> ${escapeHtml(ui().scoreOf)}</small></div>
+              <h2 class="result__title">${escapeHtml(ui().doneTitle(state.score))}</h2>
+              <p class="result__note">${escapeHtml(ui().doneNote(state.score))}</p>
+            </div>
+            <div class="result__review">
+              <p class="kicker">${escapeHtml(ui().review)}</p>
+              ${review}
+            </div>
+          `;
+          bottom.innerHTML = `
+            <button class="btn" type="button" data-action="restart">${escapeHtml(ui().again)}</button>
+            <button class="btn btn--ghost" type="button" data-action="open-app">${escapeHtml(ui().openApp)}</button>
+          `;
+        }
+
+        function restart() {
+          state.card = 0;
+          state.task = 0;
+          state.score = 0;
+          state.answered = false;
+          state.tray = [];
+          state.bank = [];
+          render();
+        }
+
+        document.addEventListener("click", (event) => {
+          const target = event.target.closest("[data-action]");
+          if (!target) return;
+          const action = target.dataset.action;
+
+          if (action === "speak") {
+            speak(PHRASES[state.card].ml);
+            return;
+          }
+          if (action === "next-card") {
+            haptic("light");
+            state.card += 1;
+            render();
+            return;
+          }
+          if (action === "answer") {
+            answer(target);
+            return;
+          }
+          if (action === "pick") {
+            const index = Number(target.dataset.index);
+            const word = state.bank[index];
+            if (!word || state.tray.includes(word)) return;
+            state.tray.push(word);
+            haptic("light");
+            renderBank();
+            return;
+          }
+          if (action === "unpick") {
+            const index = Number(target.dataset.index);
+            state.tray.splice(index, 1);
+            haptic("light");
+            renderBank();
+            return;
+          }
+          if (action === "next-task") {
+            nextTask();
+            return;
+          }
+          if (action === "restart") {
+            restart();
+            return;
+          }
+          if (action === "open-app") {
+            if (tg && typeof tg.openLink === "function") tg.openLink(APP_URL);
+            else window.open(APP_URL, "_blank", "noopener");
+          }
+        });
+
+        document.querySelectorAll("[data-lang]").forEach((button) => {
+          button.addEventListener("click", () => {
+            const lang = button.dataset.lang;
+            if (lang !== "ru" && lang !== "en") return;
+            state.lang = lang;
+            document.documentElement.lang = lang;
+            document.querySelectorAll("[data-lang]").forEach((item) => {
+              item.setAttribute("aria-pressed", String(item.dataset.lang === lang));
+            });
+            haptic("light");
+            render();
+          });
+        });
+
+        render();
+      })();
+    </script>
+  </body>
+</html>
