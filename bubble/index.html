@@ -185,12 +185,21 @@
 
       .phrase {
         margin: 0;
-        font-family: var(--ml);
-        font-size: clamp(30px, 9vw, 42px);
-        font-weight: 600;
-        line-height: 1.3;
+        font-family: var(--sans);
+        font-size: clamp(26px, 8vw, 36px);
+        font-weight: 700;
+        line-height: 1.25;
         text-align: center;
         overflow-wrap: anywhere;
+        color: var(--palm);
+      }
+
+      .ml-sub {
+        margin: 6px 0 0;
+        font-family: var(--ml);
+        font-size: 16px;
+        color: var(--ink-3);
+        text-align: center;
       }
 
       .manglish {
@@ -257,13 +266,22 @@
       }
 
       .prompt {
-        margin: 0 0 18px;
-        font-family: var(--ml);
-        font-size: clamp(26px, 8vw, 36px);
-        font-weight: 600;
-        line-height: 1.32;
+        margin: 0 0 4px;
+        font-family: var(--sans);
+        font-size: clamp(24px, 7vw, 32px);
+        font-weight: 700;
+        line-height: 1.3;
         text-align: center;
         overflow-wrap: anywhere;
+        color: var(--palm);
+      }
+
+      .prompt-sub {
+        margin: 0 0 16px;
+        font-family: var(--ml);
+        font-size: 16px;
+        color: var(--ink-3);
+        text-align: center;
       }
 
       .options {
@@ -361,8 +379,9 @@
         border: 1.5px solid var(--line);
         border-radius: 11px;
         background: var(--paper);
-        font-family: var(--ml);
-        font-size: 19px;
+        font-family: var(--sans);
+        font-size: 16px;
+        font-weight: 600;
         line-height: 1.35;
         cursor: pointer;
       }
@@ -753,8 +772,8 @@
           stage.innerHTML = `
             <p class="kicker">${escapeHtml(ui().phraseOf(state.card + 1))}</p>
             <div class="card">
-              <p class="phrase">${escapeHtml(phrase.ml)}</p>
-              <p class="manglish">${escapeHtml(phrase.manglish)}</p>
+              <p class="phrase">${escapeHtml(phrase.manglish)}</p>
+              <p class="ml-sub">${escapeHtml(phrase.ml)}</p>
               <p class="translation">${escapeHtml(translation(phrase))}</p>
               <button class="speak" type="button" data-action="speak">🔊 ${escapeHtml(ui().listen)}</button>
               ${dots(state.card)}
@@ -781,9 +800,10 @@
           if (recognition) {
             stage.innerHTML = `
               <p class="kicker">${escapeHtml(ui().recognize(state.task + 1))}</p>
-              <p class="prompt">${escapeHtml(question.phrase.ml)}</p>
+              <p class="prompt">${escapeHtml(question.phrase.manglish)}</p>
+              <p class="prompt-sub">${escapeHtml(question.phrase.ml)}</p>
               <p class="q">${escapeHtml(ui().meaning)}</p>
-              <div class="options" data-question="${escapeHtml(question.phrase.ml)}">
+              <div class="options" data-question="${escapeHtml(question.phrase.manglish)}">
                 ${question.options
                   .map(
                     (option, i) => `
@@ -796,14 +816,17 @@
               </div>
             `;
           } else {
-            const words = question.phrase.ml.split(/\s+/);
+            const cleanManglish = question.phrase.manglish.replace(/[!?.,]/g, "").trim();
+            const words = cleanManglish.split(/\s+/);
+            state.cleanTarget = cleanManglish;
             state.bank = shuffle(words);
             state.tray = [];
             stage.innerHTML = `
               <p class="kicker">${escapeHtml(ui().assemble(state.task + 1))}</p>
               <p class="q">${escapeHtml(ui().build)}</p>
               <div class="card">
-                <p class="translation" style="border:0;padding:0;margin:0">${escapeHtml(translation(question.phrase))}</p>
+                <p class="translation" style="border:0;padding:0;margin:0 0 4px 0">${escapeHtml(translation(question.phrase))}</p>
+                <p class="ml-sub" style="margin:0 0 14px 0">${escapeHtml(question.phrase.ml)}</p>
                 <div class="tray" id="tray" data-empty="${escapeHtml(ui().trayEmpty)}"></div>
                 <div class="bank" id="bank"></div>
               </div>
@@ -883,8 +906,9 @@
 
         function checkAssembly() {
           const phrase = PHRASES[state.task % PHRASES.length];
-          const built = state.tray.join(" ");
-          const ok = built === phrase.ml;
+          const built = state.tray.join(" ").toLowerCase();
+          const target = (state.cleanTarget || phrase.manglish.replace(/[!?.,]/g, "")).trim().toLowerCase();
+          const ok = built === target;
           state.answered = true;
           if (ok) state.score += 1;
           haptic(ok ? "success" : "error");
@@ -892,7 +916,7 @@
           stage.querySelectorAll(".word").forEach((word) => {
             word.disabled = true;
           });
-          renderVerdict(ok, phrase.ml, ui().wrong);
+          renderVerdict(ok, phrase.manglish, ui().wrong);
 
           const next = bottom.querySelector('[data-action="next-task"]');
           if (next) {
@@ -912,8 +936,9 @@
           const review = PHRASES.map(
             (phrase) => `
               <div class="result__row">
-                <p class="phrase">${escapeHtml(phrase.ml)}</p>
-                <p class="translation">${escapeHtml(translation(phrase))}</p>
+                <p class="phrase" style="font-size:18px;text-align:left;">${escapeHtml(phrase.manglish)}</p>
+                <p class="translation" style="border:0;padding:0;margin:2px 0;text-align:left;font-size:15px;">${escapeHtml(translation(phrase))}</p>
+                <p class="ml-sub" style="text-align:left;font-size:13px;margin:2px 0 0 0;">${escapeHtml(phrase.ml)}</p>
               </div>`,
           ).join("");
 
